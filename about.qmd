@@ -1,0 +1,16 @@
+---
+title: "About"
+image: profile.jpg
+about:
+  template: jolla
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://linkedin.com
+    - icon: github
+      text: Github
+      href: https://github.com
+
+---
+
+Hacking. Exploring. Laughing. The MSA 2024 class is all about experimenting with data science topics and tools that we are passionate about or want to learn more about! Here you will find everything we've been working on outside of class. 
