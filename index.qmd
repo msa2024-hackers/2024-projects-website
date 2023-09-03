@@ -11,6 +11,10 @@ listing:
   filter-ui: false
 page-layout: full
 title-block-banner: true
+format:
+  html:
+    toc: false
+sidebar: false
 ---
 
 # TITLE HERE

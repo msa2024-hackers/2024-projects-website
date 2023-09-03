@@ -3,9 +3,14 @@ project:
 
 website:
   title: "MSA 2024 Hackers"
+  sidebar:
+    style: docked
+    contents: pycheatsheet
   navbar:
     right:
       - about.qmd
+      - href: pycheatsheet/index.qmd
+        text: Python Cheatsheet
       - icon: github
         href: https://github.com/
       - icon: twitter
@@ -14,6 +19,8 @@ website:
 
 format:
   html:
+    toc: true
+    number-sections: true
     theme: 
       light: flatly
       dark: darkly
