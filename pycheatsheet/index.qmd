@@ -1,0 +1,7 @@
+---
+title: MSA Analytics Python Cheatsheet
+author: Yang Chen
+date-modified: 08/02/2023
+---
+
+The Python Cheatsheet is a resource for implementing statistical concepts in Python. Concepts and code snippets are taken from lectures, the [IAA Foundations](https://iaa-faculty.github.io/statistical_foundations/) book. Custom implementations may also be provided for concepts that have no specific library implementations.

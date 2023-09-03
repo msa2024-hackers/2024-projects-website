@@ -1,0 +1,321 @@
+---
+title: Exploratory Data Analysis
+author: Yang Chen
+date: 09/01/2023
+---
+
+# Setup
+
+```{r}
+library(AmesHousing)
+library(reticulate)
+
+use_condaenv("msa")
+
+ames <- make_ordinal_ames()
+```
+
+```{python}
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import statsmodels as sm
+import statsmodels.api as sma
+import scipy.stats as stats
+
+```
+
+What is each package used for?
+
+::: panel-tabset
+# pandas
+
+`pandas` library is an open-source data manipulation and analysis library for the Python programming language. It provides data structures and functions that make it easier to work with structured data, such as tabular data (similar to spreadsheets and SQL tables). Pandas is widely used in data analysis, data cleaning, data transformation, and data visualization tasks.
+
+# numpy
+
+`numpy` (Numerical Python) is an open-source Python library that provides support for large, multi-dimensional arrays and matrices, as well as a variety of mathematical functions to operate on these arrays. It is a fundamental library for numerical and scientific computing in Python and is widely used in various fields such as data analysis, machine learning, physics, engineering, and more.
+
+`numpy` is useful for its "vectorized" operations which help create performant code for operations.
+
+# seaborn
+
+`seaborn` is an open-source Python data visualization library based on Matplotlib. It provides a higher-level interface for creating informative and attractive statistical graphics. Seaborn is particularly well-suited for creating complex visualizations that showcase relationships and patterns in data, making it a popular choice among data analysts, scientists, and data visualization enthusiasts.
+
+# matplotlib
+
+`matplotlib` is a widely-used open-source data visualization library for the Python programming language. It provides a comprehensive set of tools for creating a variety of static, animated, and interactive visualizations in Python. Matplotlib is particularly popular among scientists, engineers, data analysts, and researchers for creating publication-quality visualizations.
+
+`matplotlib` can be used in combination with `seaborn` to help adjust low-level graphical details.
+
+# statsmodels
+
+`statsmodels` is an open-source Python library that focuses on statistical modeling and hypothesis testing. It provides a wide range of tools and classes for estimating and interpreting various statistical models. Statsmodels is particularly useful for statisticians, economists, social scientists, and researchers who need to perform rigorous statistical analysis and hypothesis testing on their data.
+
+In particular, the summaries provided by `statsmodels` provides an R-like interface of useful tests and statistics that we would see executing similar code in R.
+:::
+
+If you're running the `reticulate` library in R you can run Python code in R. This also includes converting R objects into Python objects. For example, we can move R datasets to `pandas` dataframes:
+
+```{python}
+ames = r.ames
+```
+
+# One-Hot Encoding
+
+```{python}
+# Use the generator version of setting the seed instead
+rng = np.random.default_rng(1234)
+
+x1 = np.repeat(["A", "B", "C"], 10)
+x2 = np.repeat(["Z", "X", "Y", "W", "V", "U"], 5)
+
+# Generate 30 values from different Normal distributions
+y = np.concatenate(
+    [
+        rng.normal(loc=2.0, scale=1.0, size=10),
+        rng.normal(loc=1.0, scale=1.0, size=10),
+        rng.normal(loc=0.0, scale=1.0, size=10),
+    ]
+)
+data = np.array([x1, x2, y]).T
+column_names = ["x1", "x2", "y"]
+
+
+df = pd.DataFrame(data=data, columns=column_names)
+df.head()
+```
+
+You have to specify which columns should be one-hot encoded:
+
+```{python}
+one_hot_encoded_data = pd.get_dummies(df, columns=["x1", "x2"])
+one_hot_encoded_data.head()
+```
+
+# Frequency Bar Plot
+
+```{python}
+ax = sns.countplot(x="Heating_QC", data=ames, color="orange")
+ax.set(
+    xlabel="Heating Quality", ylabel="Frequency", title="Bar Graph of Heating System"
+)
+plt.show()
+```
+
+# Frequency Table
+
+```{python}
+ames["Heating_QC"].value_counts()
+```
+
+# Frequency Histogram
+
+```{python}
+ax = sns.histplot(x=ames["Sale_Price"] / 1000, data=ames, color="blue")
+ax.set(
+    xlabel="Sales Price (Thousands $)",
+    ylabel="Frequency",
+    title="Histogram of Sales Price in Thousands of Dollars",
+)
+plt.show()
+```
+
+# Summary Statistics
+
+```{python}
+ames["Sale_Price"].describe()
+```
+
+```{python}
+ames.groupby("Exter_Qual")["Sale_Price"].describe()
+```
+
+# KDE Plot Overlay
+
+```{python}
+x = ames["Sale_Price"] / 1000
+sns.histplot(x, kde=True, color="blue")
+```
+
+```{python}
+# | warning: false
+
+ax = sns.displot(data=ames, x=ames["Sale_Price"] / 1000, kde=True)
+ax.set(xlabel="Sales Price (Thousands $)", ylabel="Frequency")
+```
+
+Broken down my levels of a categorical variable:
+
+```{python}
+# | warning: false
+ax = sns.displot(data=ames, x=ames["Sale_Price"] / 1000, hue="Central_Air")
+ax.set(xlabel="Sales Price (Thousands $)", ylabel="Frequency")
+```
+
+```{python}
+# | warning: false
+ax = sns.displot(
+    data=ames,
+    x=ames["Sale_Price"] / 1000,
+    hue="Central_Air",
+    common_norm=False,
+    kind="kde",
+    fill=True,
+)
+ax.set(xlabel="Sales Price (Thousands $)", ylabel="Density")
+```
+
+# QQ-Plots
+
+```{python}
+sma.qqplot(ames["Sale_Price"] / 1000, line="45", fit=True)
+```
+
+# Box Plots
+
+```{python}
+ax = sns.boxplot(data=ames, x=ames["Sale_Price"] / 1000)
+ax.set(
+    xlabel="Sales Price (Thousands $)",
+    title="Boxplot of Sales Price in Thousands of Dollars",
+)
+plt.show()
+```
+
+```{python}
+# | warning: false
+ax = sns.catplot(data=ames, x="Central_Air", y="Sale_Price", kind="box")
+plt.show()
+```
+
+# Confidence Intervals
+
+```{python}
+d = sm.stats.weightstats.DescrStatsW(ames["Sale_Price"])
+d.tconfint_mean(0.05)
+```
+
+# Hypothesis Testing
+
+## Proportions Test
+
+```{python}
+count = 65
+nobs = 100
+value = 0.5
+
+sm.stats.proportion.proportions_ztest(
+    count, nobs, value, alternative="two-sided", prop_var=0.5
+)
+```
+
+## One-Sample Mean Test
+
+```{python}
+d = sm.stats.weightstats.DescrStatsW(ames["Sale_Price"])
+
+d.ttest_mean(value=178000, alternative="two-sided")
+d.ttest_mean(value=178000, alternative="larger")
+d.ttest_mean(value=178000, alternative="smaller")
+```
+
+------------------------------------------------------------------------
+
+### DescrStatsW.ttest_mean {.unnumbered}
+
+> ttest_mean(self, value=0, alternative="two-sided")
+
+ttest of Null hypothesis that mean is equal to value.
+
+The alternative hypothesis H1 is defined by the following
+
+-   "two-sided": H1: mean not equal to value
+-   "larger": H1: mean larger than value
+-   "smaller": H1: mean smaller than value
+
+|             | Type               | Default   | Details                         |
+|-------------|--------------------|-----------|---------------------------------|
+| value       | `float` or `array` | 0         | Hypothesized value for the mean |
+| alternative | `str`              | two-sided | The alternative hypothesis, H1  |
+
+: Parameters
+
+------------------------------------------------------------------------
+
+# Two-Sample T-Tests
+
+## Normality Tests
+
+```{python}
+sma.stats.diagnostic.normal_ad(ames.loc[ames["Central_Air"] == "Y", "Sale_Price"])
+
+sma.stats.diagnostic.normal_ad(ames.loc[ames["Central_Air"] == "N", "Sale_Price"])
+```
+
+## Equality of Variance F-Test
+
+```{python}
+ca_yes = ames[ames["Central_Air"] == "Y"]
+ca_no = ames[ames["Central_Air"] == "N"]
+```
+
+```{python}
+
+
+# TODO: Create markdown documentation below function for better readability
+def f_test(x, y):
+    """F-test of Null hypothesis that variances are equal.
+
+    Calculates the F-test of two sample inputs by dividing their
+    variances. The function calculates a p-value based off the
+    F-distribution using x.size - 1 degrees of freedom and y.size - 1
+    degrees of freedom.
+
+    Parameters
+    __________
+    x : array_like
+        Array of input sample to be used in the numerator.
+    y : array_like
+        Array of input sample to be used in the denominator.
+
+    Returns
+    _______
+    f : float
+        Calculated F-statistic
+    p_value : float
+        P-value calculated from the F-distribution
+    """
+    x = np.array(x)
+    y = np.array(y)
+    f = np.var(x, ddof=1) / np.var(y, ddof=1)  # Calculates F-statistic
+
+    df_x = x.size - 1  # Degrees of freedom x
+    df_y = y.size - 1  # Degrees of freedom y
+    p_value = 1 - stats.f.cdf(f, df_x, df_y)  # Calculate p-value of F-statistic
+
+    return f, p_value
+
+
+f_test(ca_yes["Sale_Price"], ca_no["Sale_Price"])
+```
+
+## Levene's Test
+
+```{python}
+stats.levene(ca_yes["Sale_Price"], ca_no["Sale_Price"])
+```
+
+## Two-Sample Means T-Test
+
+```{python}
+# TODO: Add markdown documentation
+stats.ttest_ind(ca_yes["Sale_Price"], ca_no["Sale_Price"], equal_var=False)
+```
+
+# Mann-Whitney-Wilcoxon Test
+
+```{python}
+stats.mannwhitneyu(ca_yes["Sale_Price"], ca_no["Sale_Price"])
+```
