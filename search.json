@@ -14,6 +14,62 @@
     "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
   },
   {
+    "objectID": "pycheatsheet/index.html",
+    "href": "pycheatsheet/index.html",
+    "title": "MSA Analytics Python Cheatsheet",
+    "section": "",
+    "text": "The Python Cheatsheet is a resource for implementing statistical concepts in Python. Concepts and code snippets are taken from lectures, the IAA Foundations book. Custom implementations may also be provided for concepts that have no specific library implementations."
+  },
+  {
+    "objectID": "pycheatsheet/EDA/index.html",
+    "href": "pycheatsheet/EDA/index.html",
+    "title": "Exploratory Data Analysis",
+    "section": "",
+    "text": "Code\nlibrary(AmesHousing)\nlibrary(reticulate)\n\nuse_condaenv(\"msa\")\n\names &lt;- make_ordinal_ames()\n\n\n\n\nCode\nimport pandas as pd\nimport numpy as np\nimport seaborn as sns\nimport matplotlib.pyplot as plt\nimport statsmodels as sm\nimport statsmodels.api as sma\nimport scipy.stats as stats\n\n\nWhat is each package used for?\n\npandasnumpyseabornmatplotlibstatsmodels\n\n\npandas library is an open-source data manipulation and analysis library for the Python programming language. It provides data structures and functions that make it easier to work with structured data, such as tabular data (similar to spreadsheets and SQL tables). Pandas is widely used in data analysis, data cleaning, data transformation, and data visualization tasks.\n\n\nnumpy (Numerical Python) is an open-source Python library that provides support for large, multi-dimensional arrays and matrices, as well as a variety of mathematical functions to operate on these arrays. It is a fundamental library for numerical and scientific computing in Python and is widely used in various fields such as data analysis, machine learning, physics, engineering, and more.\nnumpy is useful for its “vectorized” operations which help create performant code for operations.\n\n\nseaborn is an open-source Python data visualization library based on Matplotlib. It provides a higher-level interface for creating informative and attractive statistical graphics. Seaborn is particularly well-suited for creating complex visualizations that showcase relationships and patterns in data, making it a popular choice among data analysts, scientists, and data visualization enthusiasts.\n\n\nmatplotlib is a widely-used open-source data visualization library for the Python programming language. It provides a comprehensive set of tools for creating a variety of static, animated, and interactive visualizations in Python. Matplotlib is particularly popular among scientists, engineers, data analysts, and researchers for creating publication-quality visualizations.\nmatplotlib can be used in combination with seaborn to help adjust low-level graphical details.\n\n\nstatsmodels is an open-source Python library that focuses on statistical modeling and hypothesis testing. It provides a wide range of tools and classes for estimating and interpreting various statistical models. Statsmodels is particularly useful for statisticians, economists, social scientists, and researchers who need to perform rigorous statistical analysis and hypothesis testing on their data.\nIn particular, the summaries provided by statsmodels provides an R-like interface of useful tests and statistics that we would see executing similar code in R.\n\n\n\nIf you’re running the reticulate library in R you can run Python code in R. This also includes converting R objects into Python objects. For example, we can move R datasets to pandas dataframes:\n\n\nCode\names = r.ames"
+  },
+  {
+    "objectID": "pycheatsheet/EDA/index.html#proportions-test",
+    "href": "pycheatsheet/EDA/index.html#proportions-test",
+    "title": "Exploratory Data Analysis",
+    "section": "11.1 Proportions Test",
+    "text": "11.1 Proportions Test\n\n\nCode\ncount = 65\nnobs = 100\nvalue = 0.5\n\nsm.stats.proportion.proportions_ztest(\n    count, nobs, value, alternative=\"two-sided\", prop_var=0.5\n)\n\n\n(3.0000000000000004, 0.002699796063260186)"
+  },
+  {
+    "objectID": "pycheatsheet/EDA/index.html#one-sample-mean-test",
+    "href": "pycheatsheet/EDA/index.html#one-sample-mean-test",
+    "title": "Exploratory Data Analysis",
+    "section": "11.2 One-Sample Mean Test",
+    "text": "11.2 One-Sample Mean Test\n\n\nCode\nd = sm.stats.weightstats.DescrStatsW(ames[\"Sale_Price\"])\n\nd.ttest_mean(value=178000, alternative=\"two-sided\")\n\n\n(1.8945491101378902, 0.058250572779629556, 2929.0)\n\n\nCode\nd.ttest_mean(value=178000, alternative=\"larger\")\n\n\n(1.8945491101378902, 0.029125286389814778, 2929.0)\n\n\nCode\nd.ttest_mean(value=178000, alternative=\"smaller\")\n\n\n(1.8945491101378902, 0.9708747136101853, 2929.0)\n\n\n\n\nDescrStatsW.ttest_mean\n\nttest_mean(self, value=0, alternative=“two-sided”)\n\nttest of Null hypothesis that mean is equal to value.\nThe alternative hypothesis H1 is defined by the following\n\n“two-sided”: H1: mean not equal to value\n“larger”: H1: mean larger than value\n“smaller”: H1: mean smaller than value\n\n\nParameters\n\n\n\n\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nvalue\nfloat or array\n0\nHypothesized value for the mean\n\n\nalternative\nstr\ntwo-sided\nThe alternative hypothesis, H1"
+  },
+  {
+    "objectID": "pycheatsheet/EDA/index.html#normality-tests",
+    "href": "pycheatsheet/EDA/index.html#normality-tests",
+    "title": "Exploratory Data Analysis",
+    "section": "12.1 Normality Tests",
+    "text": "12.1 Normality Tests\n\n\nCode\nsma.stats.diagnostic.normal_ad(ames.loc[ames[\"Central_Air\"] == \"Y\", \"Sale_Price\"])\n\n\n(91.05549995840602, 0.0)\n\n\nCode\nsma.stats.diagnostic.normal_ad(ames.loc[ames[\"Central_Air\"] == \"N\", \"Sale_Price\"])\n\n\n(1.5325564930342637, 0.0005839876642171221)"
+  },
+  {
+    "objectID": "pycheatsheet/EDA/index.html#equality-of-variance-f-test",
+    "href": "pycheatsheet/EDA/index.html#equality-of-variance-f-test",
+    "title": "Exploratory Data Analysis",
+    "section": "12.2 Equality of Variance F-Test",
+    "text": "12.2 Equality of Variance F-Test\n\n\nCode\nca_yes = ames[ames[\"Central_Air\"] == \"Y\"]\nca_no = ames[ames[\"Central_Air\"] == \"N\"]\n\n\n\n\nCode\n# TODO: Create markdown documentation below function for better readability\ndef f_test(x, y):\n    \"\"\"F-test of Null hypothesis that variances are equal.\n\n    Calculates the F-test of two sample inputs by dividing their\n    variances. The function calculates a p-value based off the\n    F-distribution using x.size - 1 degrees of freedom and y.size - 1\n    degrees of freedom.\n\n    Parameters\n    __________\n    x : array_like\n        Array of input sample to be used in the numerator.\n    y : array_like\n        Array of input sample to be used in the denominator.\n\n    Returns\n    _______\n    f : float\n        Calculated F-statistic\n    p_value : float\n        P-value calculated from the F-distribution\n    \"\"\"\n    x = np.array(x)\n    y = np.array(y)\n    f = np.var(x, ddof=1) / np.var(y, ddof=1)  # Calculates F-statistic\n\n    df_x = x.size - 1  # Degrees of freedom x\n    df_y = y.size - 1  # Degrees of freedom y\n    p_value = 1 - stats.f.cdf(f, df_x, df_y)  # Calculate p-value of F-statistic\n\n    return f, p_value\n\n\nf_test(ca_yes[\"Sale_Price\"], ca_no[\"Sale_Price\"])\n\n\n(4.4287439090727085, 1.1102230246251565e-16)"
+  },
+  {
+    "objectID": "pycheatsheet/EDA/index.html#levenes-test",
+    "href": "pycheatsheet/EDA/index.html#levenes-test",
+    "title": "Exploratory Data Analysis",
+    "section": "12.3 Levene’s Test",
+    "text": "12.3 Levene’s Test\n\n\nCode\nstats.levene(ca_yes[\"Sale_Price\"], ca_no[\"Sale_Price\"])\n\n\nLeveneResult(statistic=40.67835096966532, pvalue=2.078453574282441e-10)"
+  },
+  {
+    "objectID": "pycheatsheet/EDA/index.html#two-sample-means-t-test",
+    "href": "pycheatsheet/EDA/index.html#two-sample-means-t-test",
+    "title": "Exploratory Data Analysis",
+    "section": "12.4 Two-Sample Means T-Test",
+    "text": "12.4 Two-Sample Means T-Test\n\n\nCode\n# TODO: Add markdown documentation\nstats.ttest_ind(ca_yes[\"Sale_Price\"], ca_no[\"Sale_Price\"], equal_var=False)\n\n\nTtestResult(statistic=27.43321766127874, pvalue=8.78493646231923e-88, df=336.0630297026842)"
+  },
+  {
     "objectID": "projects/post-with-code/index.html",
     "href": "projects/post-with-code/index.html",
     "title": "Post With Code",
@@ -25,6 +81,6 @@
     "href": "index.html",
     "title": "MSA 2024 Hackers",
     "section": "",
-    "text": "TITLE HERE\nThis is a remarkable description crafted carefully with the wills and souls of the MSA Class of 2024. Our communication skills are second to none and we eat, sleep, and breathe data, coffee, and the blood of our enemies.\nIf you want to learn more about a project or see its source code, click on one of the cards below!\n\n\nProjects\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\nHarlow Malloc\n\n\nAug 12, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\n\n\n\n\nTristan O’Malley\n\n\nAug 9, 2023\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "1 TITLE HERE\nThis is a remarkable description crafted carefully with the wills and souls of the MSA Class of 2024. Our communication skills are second to none and we eat, sleep, and breathe data, coffee, and the blood of our enemies.\nIf you want to learn more about a project or see its source code, click on one of the cards below!\n\n\n2 Projects\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\nHarlow Malloc\n\n\nAug 12, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\n\n\n\n\nTristan O’Malley\n\n\nAug 9, 2023\n\n\n\n\n\n\n\n\nNo matching items"
   }
 ]
