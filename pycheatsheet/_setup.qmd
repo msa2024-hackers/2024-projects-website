@@ -1,0 +1,61 @@
+<!---
+ Template for library/package imports that are needed for running the cheatsheet. 
+--->
+
+# Setup
+
+```{r}
+library(AmesHousing)
+library(reticulate)
+
+use_condaenv("msa")
+
+ames <- make_ordinal_ames()
+```
+
+```{python}
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+import statsmodels as sm
+import statsmodels.api as sma
+import statsmodels.formula.api as smf
+import scipy.stats as stats
+```
+
+What is each package used for?
+
+::: panel-tabset
+# pandas
+
+`pandas` library is an open-source data manipulation and analysis library for the Python programming language. It provides data structures and functions that make it easier to work with structured data, such as tabular data (similar to spreadsheets and SQL tables). Pandas is widely used in data analysis, data cleaning, data transformation, and data visualization tasks.
+
+# numpy
+
+`numpy` (Numerical Python) is an open-source Python library that provides support for large, multi-dimensional arrays and matrices, as well as a variety of mathematical functions to operate on these arrays. It is a fundamental library for numerical and scientific computing in Python and is widely used in various fields such as data analysis, machine learning, physics, engineering, and more.
+
+`numpy` is useful for its "vectorized" operations which help create performant code for operations.
+
+# seaborn
+
+`seaborn` is an open-source Python data visualization library based on Matplotlib. It provides a higher-level interface for creating informative and attractive statistical graphics. Seaborn is particularly well-suited for creating complex visualizations that showcase relationships and patterns in data, making it a popular choice among data analysts, scientists, and data visualization enthusiasts.
+
+# matplotlib
+
+`matplotlib` is a widely-used open-source data visualization library for the Python programming language. It provides a comprehensive set of tools for creating a variety of static, animated, and interactive visualizations in Python. Matplotlib is particularly popular among scientists, engineers, data analysts, and researchers for creating publication-quality visualizations.
+
+`matplotlib` can be used in combination with `seaborn` to help adjust low-level graphical details.
+
+# statsmodels
+
+`statsmodels` is an open-source Python library that focuses on statistical modeling and hypothesis testing. It provides a wide range of tools and classes for estimating and interpreting various statistical models. Statsmodels is particularly useful for statisticians, economists, social scientists, and researchers who need to perform rigorous statistical analysis and hypothesis testing on their data.
+
+In particular, the summaries provided by `statsmodels` provides an R-like interface of useful tests and statistics that we would see executing similar code in R.
+:::
+
+If you're running the `reticulate` library in R you can run Python code in R. This also includes converting R objects into Python objects. For example, we can move R datasets to `pandas` dataframes:
+
+```{python}
+ames = r.ames
+```

@@ -1,0 +1,251 @@
+---
+title: One-Way ANOVA and Simple Linear Regression
+author: Yang Chen
+date: 09/04/2023
+---
+
+{{< include ../_setup.qmd >}}
+
+# Honest Assessment (Train-Test Split)
+
+```{python}
+from sklearn.model_selection import train_test_split
+
+# Create a train-test split where test is 30% of the data
+# Setting the seed (random_state) ensures that we can reproduce our split
+# Function returns a tuple so we can unpack it into separate variables
+train, test = train_test_split(ames, test_size=0.3, random_state=123)
+train.head()
+```
+
+# Bivariate EDA
+
+## Continuous-Continuous Plots
+
+<!---
+ $A:
+ warning: false 
+--->
+```{python}
+#| warning: false
+ax = sns.relplot(data=train, y=train["Sale_Price"] / 1000, x="Gr_Liv_Area")
+ax.set(ylabel="Sales Price (Thousands $)", xlabel="Greater Living Area (Sqft)")
+```
+
+## Continuous-Categorical Plots
+
+```{python}
+train["Exter_Qual"] = train["Exter_Qual"].cat.remove_unused_categories()
+
+ax = sns.catplot(data=train, y="Sale_Price", x="Exter_Qual", kind="bar")
+ax.set(ylabel="Sales Price (Thousands $)", xlabel="Exterior Quality")
+plt.show()
+```
+
+## Histogram Distribution
+```{python}
+ax = sns.displot(data=ames, x=ames["Sale_Price"] / 1000, hue="Exter_Qual")
+ax.set(xlabel="Sales Price (Thousands $)", ylabel="Frequency")
+plt.show()
+```
+
+## KDE Distribution
+```{python}
+ax = sns.displot(
+    ames,
+    x=ames["Sale_Price"] / 1000,
+    hue="Exter_Qual",
+    common_norm=False,
+    kind="kde",
+    fill=True,
+)
+ax.set(xlabel="Sales Price (Thousands $)", ylabel="Density")
+plt.show()
+```
+
+<!---
+ $A:
+ warning: false 
+--->
+## Box Plot
+```{python}
+#| warning: false
+ax = sns.catplot(ames, x="Exter_Qual", y="Sale_Price", kind="box")
+plt.show()
+```
+
+# One-Way ANOVA
+
+```{python}
+# TODO: Add markdown documentation
+
+import statsmodels.formula.api as smf
+
+# Linear regression approach to ANOVA by fitting a model with exterior qual.
+# C(<var>) is the statsmodels equivalent of factor() in R
+model = smf.ols("Sale_Price ~ C(Exter_Qual)", data=train).fit()
+model.summary()
+
+sma.stats.anova_lm(model, typ=2)
+```
+
+## Alternative Method Using `anova_oneway`
+
+```{python}
+sm.stats.oneway.anova_oneway(
+    train["Sale_Price"],
+    groups=train["Exter_Qual"],
+    use_var="equal",
+    welch_correction=False,
+)
+```
+
+## Alternative Method Using `scipy`
+
+```{python}
+stats.f_oneway(
+    train.loc[train["Exter_Qual"] == "Excellent", "Sale_Price"],
+    train.loc[train["Exter_Qual"] == "Good", "Sale_Price"],
+    train.loc[train["Exter_Qual"] == "Typical", "Sale_Price"],
+    train.loc[train["Exter_Qual"] == "Fair", "Sale_Price"],
+)
+```
+
+```{python}
+train["pred_anova"] = model.predict()
+train["resid_anova"] = model.resid
+
+train[["Sale_Price", "pred_anova", "resid_anova"]].head(10)
+```
+
+# Testing Assumptions
+
+## QQ-Plot
+
+```{python}
+sma.qqplot(train["resid_anova"])
+plt.show()
+```
+
+## Shapiro-Wilk Test
+
+```{python}
+stats.shapiro(model.resid)
+```
+
+## Levene Test
+
+```{python}
+stats.levene(
+    train.loc[train["Exter_Qual"] == "Excellent", "Sale_Price"],
+    train.loc[train["Exter_Qual"] == "Good", "Sale_Price"],
+    train.loc[train["Exter_Qual"] == "Typical", "Sale_Price"],
+    train.loc[train["Exter_Qual"] == "Fair", "Sale_Price"],
+)
+```
+
+## Fligner Test
+
+```{python}
+stats.fligner(
+    train.loc[train["Exter_Qual"] == "Excellent", "Sale_Price"],
+    train.loc[train["Exter_Qual"] == "Good", "Sale_Price"],
+    train.loc[train["Exter_Qual"] == "Typical", "Sale_Price"],
+    train.loc[train["Exter_Qual"] == "Fair", "Sale_Price"],
+)
+```
+
+## Kruskal-Wallis
+
+```{python}
+stats.kruskal(
+    train.loc[train["Exter_Qual"] == "Excellent", "Sale_Price"],
+    train.loc[train["Exter_Qual"] == "Good", "Sale_Price"],
+    train.loc[train["Exter_Qual"] == "Typical", "Sale_Price"],
+    train.loc[train["Exter_Qual"] == "Fair", "Sale_Price"],
+)
+```
+
+# ANOVA Post-Hoc Testing
+
+## Tukey-Kramer Test
+
+```{python}
+import statsmodels.stats.multicomp as mc
+
+comp = mc.MultiComparison(train["Sale_Price"], train["Exter_Qual"])
+ph_res = comp.tukeyhsd(alpha=0.05)
+ph_res.summary()
+```
+
+```{python}
+ph_res.plot_simultaneous()
+```
+
+## Dunnett's Test
+
+Currently there is no Dunnett's test implemented in Python.
+
+# Pearson Correlation
+
+```{python}
+np.corrcoef(train["Gr_Liv_Area"], train["Sale_Price"])
+```
+
+## Statistical Test for Correlation
+
+```{python}
+stats.pearsonr(train["Gr_Liv_Area"], train["Sale_Price"])
+```
+
+## Correlation Matrix
+
+```{python}
+np.corrcoef(
+    train[["Year_Built", "Total_Bsmt_SF", "First_Flr_SF", "Gr_Liv_Area", "Sale_Price"]],
+    rowvar=False,
+)
+```
+
+Correlation matrix pair plots:
+
+<!---
+ $A:
+ warning: false 
+--->
+```{python}
+#| warning: false
+ax = sns.pairplot(
+    train[["Year_Built", "Total_Bsmt_SF", "First_Flr_SF", "Gr_Liv_Area", "Sale_Price"]]
+)
+plt.show()
+```
+
+# Simple Linear Regression
+
+## Spearman Correlation Coefficient
+
+```{python}
+stats.spearmanr(train['Gr_Liv_Area'], train['Sale_Price'])
+```
+
+## Test for Association
+
+```{python}
+model_slr = smf.ols("Sale_Price ~ Gr_Liv_Area", data=train).fit()
+model_slr.summary()
+```
+
+## QQ-Plots
+
+```{python}
+train['pred_slr'] = model_slr.predict()
+train['resid_slr'] = model_slr.resid
+
+train[['Sale_Price', 'pred_anova', 'pred_slr']].head(10)
+```
+
+```{python}
+sma.qqplot(train['resid_slr'])
+plt.show()
+```

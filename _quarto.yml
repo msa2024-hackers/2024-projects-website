@@ -3,6 +3,7 @@ project:
 
 website:
   title: "MSA 2024 Hackers"
+  page-navigation: true
   sidebar:
     style: docked
     contents: pycheatsheet
@@ -12,9 +13,7 @@ website:
       - href: pycheatsheet/index.qmd
         text: Python Cheatsheet
       - icon: github
-        href: https://github.com/
-      - icon: twitter
-        href: https://twitter.com
+        href: https://github.com/msa2024-hackers/2024-projects-website
   page-footer: Made with ❤️ by the MSA Class of 2024
 
 format:

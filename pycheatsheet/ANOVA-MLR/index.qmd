@@ -1,0 +1,40 @@
+---
+title: Complex ANOVA and Multiple Linear Regression
+author: Yang Chen
+date: 09/04/2023
+---
+
+{{< include ../_setup.qmd >}}
+
+## Additional Setup
+
+```{python}
+from sklearn.model_selection import train_test_split
+
+train, test = train_test_split(ames, test_size=0.3, random_state=123)
+```
+
+# Two-Way ANOVA
+```{python}
+model = smf.ols("Sale_Price ~ C(Heating_QC) + C(Central_Air)", data=train).fit()
+model.summary()
+```
+
+```{python}
+sma.stats.anova_lm(model, typ=2)
+```
+
+# ANOVA Post-Hoc Testing
+
+```{python}
+from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+train["anova_combo"] = train["Heating_QC"].astype("string") + " / " + train["Central_Air"]
+mcomp = pairwise_tukeyhsd(endog=train["Sale_Price"], groups=train["anova_combo"], alpha=0.05)
+
+mcomp.summary()
+```
+
+```{python}
+mcomp.plot_simultaneous()
+```

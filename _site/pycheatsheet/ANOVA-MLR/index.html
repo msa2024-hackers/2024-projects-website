@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Yang Chen">
+<meta name="dcterms.date" content="2023-09-04">
+
+<title>MSA 2024 Hackers - Complex ANOVA and Multiple Linear Regression</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../pycheatsheet/ANOVA-SLR/index.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">MSA 2024 Hackers</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../pycheatsheet/index.html" rel="" target="" aria-current="page">
+ <span class="menu-text">Python Cheatsheet</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/msa2024-hackers/2024-projects-website" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../pycheatsheet/index.html">MSA Analytics Python Cheatsheet</a></li><li class="breadcrumb-item"><a href="../../pycheatsheet/ANOVA-MLR/index.html">Complex ANOVA and Multiple Linear Regression</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../pycheatsheet/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MSA Analytics Python Cheatsheet</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../pycheatsheet/EDA/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exploratory Data Analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../pycheatsheet/ANOVA-SLR/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">One-Way ANOVA and Simple Linear Regression</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <span class="sidebar-item-text sidebar-link text-start">
+ <span class="menu-text">Complex ANOVA and Multiple Linear Regression</span></span>
+  </li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">1</span> Setup</a>
+  <ul class="collapse">
+  <li><a href="#additional-setup" id="toc-additional-setup" class="nav-link" data-scroll-target="#additional-setup"><span class="header-section-number">1.1</span> Additional Setup</a></li>
+  </ul></li>
+  <li><a href="#two-way-anova" id="toc-two-way-anova" class="nav-link" data-scroll-target="#two-way-anova"><span class="header-section-number">2</span> Two-Way ANOVA</a></li>
+  <li><a href="#anova-post-hoc-testing" id="toc-anova-post-hoc-testing" class="nav-link" data-scroll-target="#anova-post-hoc-testing"><span class="header-section-number">3</span> ANOVA Post-Hoc Testing</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Complex ANOVA and Multiple Linear Regression</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Yang Chen </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 4, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<!---
+ Template for library/package imports that are needed for running the cheatsheet. 
+--->
+<section id="setup" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Setup</h1>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AmesHousing)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">use_condaenv</span>(<span class="st">"msa"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>ames <span class="ot">&lt;-</span> <span class="fu">make_ordinal_ames</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels <span class="im">as</span> sm</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sma</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.stats <span class="im">as</span> stats</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>What is each package used for?</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">pandas</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">numpy</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">seaborn</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false">matplotlib</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false">statsmodels</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p><code>pandas</code> library is an open-source data manipulation and analysis library for the Python programming language. It provides data structures and functions that make it easier to work with structured data, such as tabular data (similar to spreadsheets and SQL tables). Pandas is widely used in data analysis, data cleaning, data transformation, and data visualization tasks.</p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p><code>numpy</code> (Numerical Python) is an open-source Python library that provides support for large, multi-dimensional arrays and matrices, as well as a variety of mathematical functions to operate on these arrays. It is a fundamental library for numerical and scientific computing in Python and is widely used in various fields such as data analysis, machine learning, physics, engineering, and more.</p>
+<p><code>numpy</code> is useful for its “vectorized” operations which help create performant code for operations.</p>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p><code>seaborn</code> is an open-source Python data visualization library based on Matplotlib. It provides a higher-level interface for creating informative and attractive statistical graphics. Seaborn is particularly well-suited for creating complex visualizations that showcase relationships and patterns in data, making it a popular choice among data analysts, scientists, and data visualization enthusiasts.</p>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<p><code>matplotlib</code> is a widely-used open-source data visualization library for the Python programming language. It provides a comprehensive set of tools for creating a variety of static, animated, and interactive visualizations in Python. Matplotlib is particularly popular among scientists, engineers, data analysts, and researchers for creating publication-quality visualizations.</p>
+<p><code>matplotlib</code> can be used in combination with <code>seaborn</code> to help adjust low-level graphical details.</p>
+</div>
+<div id="tabset-1-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-5-tab">
+<p><code>statsmodels</code> is an open-source Python library that focuses on statistical modeling and hypothesis testing. It provides a wide range of tools and classes for estimating and interpreting various statistical models. Statsmodels is particularly useful for statisticians, economists, social scientists, and researchers who need to perform rigorous statistical analysis and hypothesis testing on their data.</p>
+<p>In particular, the summaries provided by <code>statsmodels</code> provides an R-like interface of useful tests and statistics that we would see executing similar code in R.</p>
+</div>
+</div>
+</div>
+<p>If you’re running the <code>reticulate</code> library in R you can run Python code in R. This also includes converting R objects into Python objects. For example, we can move R datasets to <code>pandas</code> dataframes:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ames <span class="op">=</span> r.ames</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<section id="additional-setup" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="additional-setup"><span class="header-section-number">1.1</span> Additional Setup</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>train, test <span class="op">=</span> train_test_split(ames, test_size<span class="op">=</span><span class="fl">0.3</span>, random_state<span class="op">=</span><span class="dv">123</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+</section>
+<section id="two-way-anova" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Two-Way ANOVA</h1>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.ols(<span class="st">"Sale_Price ~ C(Heating_QC) + C(Central_Air)"</span>, data<span class="op">=</span>train).fit()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="simpletable table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>OLS Regression Results</caption>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dep. Variable:</td>
+<td>Sale_Price</td>
+<td data-quarto-table-cell-role="th">R-squared:</td>
+<td>0.240</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Model:</td>
+<td>OLS</td>
+<td data-quarto-table-cell-role="th">Adj. R-squared:</td>
+<td>0.239</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Method:</td>
+<td>Least Squares</td>
+<td data-quarto-table-cell-role="th">F-statistic:</td>
+<td>129.5</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Date:</td>
+<td>Mon, 04 Sep 2023</td>
+<td data-quarto-table-cell-role="th">Prob (F-statistic):</td>
+<td>2.07e-119</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Time:</td>
+<td>22:32:02</td>
+<td data-quarto-table-cell-role="th">Log-Likelihood:</td>
+<td>-25806.</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">No. Observations:</td>
+<td>2051</td>
+<td data-quarto-table-cell-role="th">AIC:</td>
+<td>5.162e+04</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Df Residuals:</td>
+<td>2045</td>
+<td data-quarto-table-cell-role="th">BIC:</td>
+<td>5.166e+04</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Df Model:</td>
+<td>5</td>
+<td data-quarto-table-cell-role="th"></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Covariance Type:</td>
+<td>nonrobust</td>
+<td data-quarto-table-cell-role="th"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table class="simpletable table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td></td>
+<td data-quarto-table-cell-role="th">coef</td>
+<td data-quarto-table-cell-role="th">std err</td>
+<td data-quarto-table-cell-role="th">t</td>
+<td data-quarto-table-cell-role="th">P&gt;|t|</td>
+<td data-quarto-table-cell-role="th">[0.025</td>
+<td data-quarto-table-cell-role="th">0.975]</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Intercept</td>
+<td>5.073e+04</td>
+<td>4.08e+04</td>
+<td>1.243</td>
+<td>0.214</td>
+<td>-2.93e+04</td>
+<td>1.31e+05</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">C(Heating_QC)[T.Fair]</td>
+<td>4.069e+04</td>
+<td>4.17e+04</td>
+<td>0.975</td>
+<td>0.329</td>
+<td>-4.11e+04</td>
+<td>1.23e+05</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">C(Heating_QC)[T.Typical]</td>
+<td>4.171e+04</td>
+<td>4.1e+04</td>
+<td>1.017</td>
+<td>0.309</td>
+<td>-3.87e+04</td>
+<td>1.22e+05</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">C(Heating_QC)[T.Good]</td>
+<td>5.206e+04</td>
+<td>4.11e+04</td>
+<td>1.266</td>
+<td>0.206</td>
+<td>-2.86e+04</td>
+<td>1.33e+05</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">C(Heating_QC)[T.Excellent]</td>
+<td>1.125e+05</td>
+<td>4.1e+04</td>
+<td>2.743</td>
+<td>0.006</td>
+<td>3.21e+04</td>
+<td>1.93e+05</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">C(Central_Air)[T.Y]</td>
+<td>5.492e+04</td>
+<td>6656.049</td>
+<td>8.251</td>
+<td>0.000</td>
+<td>4.19e+04</td>
+<td>6.8e+04</td>
+</tr>
+</tbody>
+</table>
+<table class="simpletable table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Omnibus:</td>
+<td>816.668</td>
+<td data-quarto-table-cell-role="th">Durbin-Watson:</td>
+<td>2.013</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Prob(Omnibus):</td>
+<td>0.000</td>
+<td data-quarto-table-cell-role="th">Jarque-Bera (JB):</td>
+<td>4816.450</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Skew:</td>
+<td>1.775</td>
+<td data-quarto-table-cell-role="th">Prob(JB):</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Kurtosis:</td>
+<td>9.615</td>
+<td data-quarto-table-cell-role="th">Cond. No.</td>
+<td>88.8</td>
+</tr>
+</tbody>
+</table>
+<br><br>Notes:<br>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+</div>
+</div>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sma.stats.anova_lm(model, typ<span class="op">=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      sum_sq      df           F        PR(&gt;F)
+C(Heating_QC)   2.216871e+12     4.0  111.257391  6.745663e-86
+C(Central_Air)  3.390960e+11     1.0   68.072407  2.788148e-16
+Residual        1.018697e+13  2045.0         NaN           NaN</code></pre>
+</div>
+</div>
+</section>
+<section id="anova-post-hoc-testing" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> ANOVA Post-Hoc Testing</h1>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> statsmodels.stats.multicomp <span class="im">import</span> pairwise_tukeyhsd</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>train[<span class="st">"anova_combo"</span>] <span class="op">=</span> train[<span class="st">"Heating_QC"</span>].astype(<span class="st">"string"</span>) <span class="op">+</span> <span class="st">" / "</span> <span class="op">+</span> train[<span class="st">"Central_Air"</span>]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>mcomp <span class="op">=</span> pairwise_tukeyhsd(endog<span class="op">=</span>train[<span class="st">"Sale_Price"</span>], groups<span class="op">=</span>train[<span class="st">"anova_combo"</span>], alpha<span class="op">=</span><span class="fl">0.05</span>)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>mcomp.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="simpletable table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Multiple Comparison of Means - Tukey HSD, FWER=0.05</caption>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">group1</td>
+<td data-quarto-table-cell-role="th">group2</td>
+<td data-quarto-table-cell-role="th">meandiff</td>
+<td data-quarto-table-cell-role="th">p-adj</td>
+<td data-quarto-table-cell-role="th">lower</td>
+<td data-quarto-table-cell-role="th">upper</td>
+<td data-quarto-table-cell-role="th">reject</td>
+</tr>
+<tr class="even">
+<td>Excellent / N</td>
+<td>Excellent / Y</td>
+<td>105834.106</td>
+<td>0.0</td>
+<td>43528.0453</td>
+<td>168140.1666</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<td>Excellent / N</td>
+<td>Fair / N</td>
+<td>-27112.931</td>
+<td>0.979</td>
+<td>-101637.8555</td>
+<td>47411.9935</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>Excellent / N</td>
+<td>Fair / Y</td>
+<td>37965.2571</td>
+<td>0.8188</td>
+<td>-34555.5276</td>
+<td>110486.0419</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Excellent / N</td>
+<td>Good / N</td>
+<td>-5788.8889</td>
+<td>1.0</td>
+<td>-87057.0612</td>
+<td>75479.2834</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>Excellent / N</td>
+<td>Good / Y</td>
+<td>44480.0633</td>
+<td>0.4366</td>
+<td>-18707.3106</td>
+<td>107667.4372</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Excellent / N</td>
+<td>Poor / N</td>
+<td>-62925.0</td>
+<td>0.9761</td>
+<td>-232517.4562</td>
+<td>106667.4562</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>Excellent / N</td>
+<td>Poor / Y</td>
+<td>-5975.0</td>
+<td>1.0</td>
+<td>-237682.4065</td>
+<td>225732.4065</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Excellent / N</td>
+<td>Typical / N</td>
+<td>-10831.6579</td>
+<td>1.0</td>
+<td>-77845.4364</td>
+<td>56182.1206</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>Excellent / N</td>
+<td>Typical / Y</td>
+<td>32921.1667</td>
+<td>0.8165</td>
+<td>-29798.812</td>
+<td>95641.1453</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Excellent / Y</td>
+<td>Fair / N</td>
+<td>-132947.037</td>
+<td>0.0</td>
+<td>-174973.8052</td>
+<td>-90920.2688</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<td>Excellent / Y</td>
+<td>Fair / Y</td>
+<td>-67868.8488</td>
+<td>0.0</td>
+<td>-106229.6243</td>
+<td>-29508.0733</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<td>Excellent / Y</td>
+<td>Good / N</td>
+<td>-111622.9948</td>
+<td>0.0</td>
+<td>-164696.5354</td>
+<td>-58549.4543</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<td>Excellent / Y</td>
+<td>Good / Y</td>
+<td>-61354.0427</td>
+<td>0.0</td>
+<td>-75669.3873</td>
+<td>-47038.698</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<td>Excellent / Y</td>
+<td>Poor / N</td>
+<td>-168759.106</td>
+<td>0.0254</td>
+<td>-326790.3879</td>
+<td>-10727.824</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<td>Excellent / Y</td>
+<td>Poor / Y</td>
+<td>-111809.106</td>
+<td>0.8555</td>
+<td>-335193.5439</td>
+<td>111575.332</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Excellent / Y</td>
+<td>Typical / N</td>
+<td>-116665.7639</td>
+<td>0.0</td>
+<td>-143182.3884</td>
+<td>-90149.1393</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<td>Excellent / Y</td>
+<td>Typical / Y</td>
+<td>-72912.9393</td>
+<td>0.0</td>
+<td>-84999.3198</td>
+<td>-60826.5587</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<td>Fair / N</td>
+<td>Fair / Y</td>
+<td>65078.1882</td>
+<td>0.0092</td>
+<td>9011.5469</td>
+<td>121144.8295</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<td>Fair / N</td>
+<td>Good / N</td>
+<td>21324.0421</td>
+<td>0.9918</td>
+<td>-45673.8674</td>
+<td>88321.9517</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Fair / N</td>
+<td>Good / Y</td>
+<td>71592.9943</td>
+<td>0.0</td>
+<td>28270.3874</td>
+<td>114915.6012</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<td>Fair / N</td>
+<td>Poor / N</td>
+<td>-35812.069</td>
+<td>0.9995</td>
+<td>-199047.4979</td>
+<td>127423.3599</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Fair / N</td>
+<td>Poor / Y</td>
+<td>21137.931</td>
+<td>1.0</td>
+<td>-205957.9216</td>
+<td>248233.7837</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>Fair / N</td>
+<td>Typical / N</td>
+<td>16281.2731</td>
+<td>0.9884</td>
+<td>-32453.2172</td>
+<td>65015.7635</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Fair / N</td>
+<td>Typical / Y</td>
+<td>60034.0977</td>
+<td>0.0004</td>
+<td>17396.0892</td>
+<td>102672.1062</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<td>Fair / Y</td>
+<td>Good / N</td>
+<td>-43754.146</td>
+<td>0.4993</td>
+<td>-108515.3978</td>
+<td>21007.1057</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Fair / Y</td>
+<td>Good / Y</td>
+<td>6514.8061</td>
+<td>1.0</td>
+<td>-33261.4194</td>
+<td>46291.0317</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>Fair / Y</td>
+<td>Poor / N</td>
+<td>-100890.2571</td>
+<td>0.6215</td>
+<td>-263220.4918</td>
+<td>61439.9776</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Fair / Y</td>
+<td>Poor / Y</td>
+<td>-43940.2571</td>
+<td>0.9998</td>
+<td>-270386.3349</td>
+<td>182505.8206</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>Fair / Y</td>
+<td>Typical / N</td>
+<td>-48796.915</td>
+<td>0.0249</td>
+<td>-94407.7734</td>
+<td>-3186.0567</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<td>Fair / Y</td>
+<td>Typical / Y</td>
+<td>-5044.0905</td>
+<td>1.0</td>
+<td>-44073.5616</td>
+<td>33985.3807</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>Good / N</td>
+<td>Good / Y</td>
+<td>50268.9522</td>
+<td>0.0948</td>
+<td>-3836.4979</td>
+<td>104374.4023</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Good / N</td>
+<td>Poor / N</td>
+<td>-57136.1111</td>
+<td>0.986</td>
+<td>-223558.3353</td>
+<td>109286.1131</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>Good / N</td>
+<td>Poor / Y</td>
+<td>-186.1111</td>
+<td>1.0</td>
+<td>-229583.3163</td>
+<td>229211.0941</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Good / N</td>
+<td>Typical / N</td>
+<td>-5042.769</td>
+<td>1.0</td>
+<td>-63571.4117</td>
+<td>53485.8737</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>Good / N</td>
+<td>Typical / Y</td>
+<td>38710.0556</td>
+<td>0.3965</td>
+<td>-14848.8021</td>
+<td>92268.9132</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Good / Y</td>
+<td>Poor / N</td>
+<td>-107405.0633</td>
+<td>0.4936</td>
+<td>-265785.8863</td>
+<td>50975.7597</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>Good / Y</td>
+<td>Poor / Y</td>
+<td>-50455.0633</td>
+<td>0.9994</td>
+<td>-274086.9173</td>
+<td>173176.7907</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Good / Y</td>
+<td>Typical / N</td>
+<td>-55311.7212</td>
+<td>0.0</td>
+<td>-83837.6813</td>
+<td>-26785.7611</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<td>Good / Y</td>
+<td>Typical / Y</td>
+<td>-11558.8966</td>
+<td>0.3992</td>
+<td>-27580.1206</td>
+<td>4462.3273</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Poor / N</td>
+<td>Poor / Y</td>
+<td>56950.0</td>
+<td>0.9997</td>
+<td>-216509.6188</td>
+<td>330409.6188</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>Poor / N</td>
+<td>Typical / N</td>
+<td>52093.3421</td>
+<td>0.9904</td>
+<td>-107852.5468</td>
+<td>212039.231</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Poor / N</td>
+<td>Typical / Y</td>
+<td>95846.1667</td>
+<td>0.6561</td>
+<td>-62348.7656</td>
+<td>254041.0989</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>Poor / Y</td>
+<td>Typical / N</td>
+<td>-4856.6579</td>
+<td>1.0</td>
+<td>-229599.6409</td>
+<td>219886.3251</td>
+<td>False</td>
+</tr>
+<tr class="odd">
+<td>Poor / Y</td>
+<td>Typical / Y</td>
+<td>38896.1667</td>
+<td>0.9999</td>
+<td>-184604.0741</td>
+<td>262396.4075</td>
+<td>False</td>
+</tr>
+<tr class="even">
+<td>Typical / N</td>
+<td>Typical / Y</td>
+<td>43752.8246</td>
+<td>0.0</td>
+<td>16277.7103</td>
+<td>71227.9388</td>
+<td>True</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>mcomp.plot_simultaneous()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../pycheatsheet/ANOVA-SLR/index.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">One-Way ANOVA and Simple Linear Regression</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">Made with ❤️ by the MSA Class of 2024</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>

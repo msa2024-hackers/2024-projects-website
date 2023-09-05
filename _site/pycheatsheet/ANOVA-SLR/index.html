@@ -1,0 +1,1508 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Yang Chen">
+<meta name="dcterms.date" content="2023-09-04">
+
+<title>MSA 2024 Hackers - One-Way ANOVA and Simple Linear Regression</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<link href="../../pycheatsheet/EDA/index.html" rel="prev">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">MSA 2024 Hackers</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="../../pycheatsheet/index.html" rel="" target="" aria-current="page">
+ <span class="menu-text">Python Cheatsheet</span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/msa2024-hackers/2024-projects-website" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../../pycheatsheet/index.html">MSA Analytics Python Cheatsheet</a></li><li class="breadcrumb-item"><a href="../../pycheatsheet/ANOVA-SLR/index.html">One-Way ANOVA and Simple Linear Regression</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="../../pycheatsheet/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">MSA Analytics Python Cheatsheet</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../pycheatsheet/EDA/index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Exploratory Data Analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../../pycheatsheet/ANOVA-SLR/index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">One-Way ANOVA and Simple Linear Regression</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup"><span class="header-section-number">1</span> Setup</a></li>
+  <li><a href="#honest-assessment-train-test-split" id="toc-honest-assessment-train-test-split" class="nav-link" data-scroll-target="#honest-assessment-train-test-split"><span class="header-section-number">2</span> Honest Assessment (Train-Test Split)</a></li>
+  <li><a href="#bivariate-eda" id="toc-bivariate-eda" class="nav-link" data-scroll-target="#bivariate-eda"><span class="header-section-number">3</span> Bivariate EDA</a>
+  <ul class="collapse">
+  <li><a href="#continuous-continuous-plots" id="toc-continuous-continuous-plots" class="nav-link" data-scroll-target="#continuous-continuous-plots"><span class="header-section-number">3.1</span> Continuous-Continuous Plots</a></li>
+  <li><a href="#continuous-categorical-plots" id="toc-continuous-categorical-plots" class="nav-link" data-scroll-target="#continuous-categorical-plots"><span class="header-section-number">3.2</span> Continuous-Categorical Plots</a></li>
+  <li><a href="#histogram-distribution" id="toc-histogram-distribution" class="nav-link" data-scroll-target="#histogram-distribution"><span class="header-section-number">3.3</span> Histogram Distribution</a></li>
+  <li><a href="#kde-distribution" id="toc-kde-distribution" class="nav-link" data-scroll-target="#kde-distribution"><span class="header-section-number">3.4</span> KDE Distribution</a></li>
+  <li><a href="#box-plot" id="toc-box-plot" class="nav-link" data-scroll-target="#box-plot"><span class="header-section-number">3.5</span> Box Plot</a></li>
+  </ul></li>
+  <li><a href="#one-way-anova" id="toc-one-way-anova" class="nav-link" data-scroll-target="#one-way-anova"><span class="header-section-number">4</span> One-Way ANOVA</a>
+  <ul class="collapse">
+  <li><a href="#alternative-method-using-anova_oneway" id="toc-alternative-method-using-anova_oneway" class="nav-link" data-scroll-target="#alternative-method-using-anova_oneway"><span class="header-section-number">4.1</span> Alternative Method Using <code>anova_oneway</code></a></li>
+  <li><a href="#alternative-method-using-scipy" id="toc-alternative-method-using-scipy" class="nav-link" data-scroll-target="#alternative-method-using-scipy"><span class="header-section-number">4.2</span> Alternative Method Using <code>scipy</code></a></li>
+  </ul></li>
+  <li><a href="#testing-assumptions" id="toc-testing-assumptions" class="nav-link" data-scroll-target="#testing-assumptions"><span class="header-section-number">5</span> Testing Assumptions</a>
+  <ul class="collapse">
+  <li><a href="#qq-plot" id="toc-qq-plot" class="nav-link" data-scroll-target="#qq-plot"><span class="header-section-number">5.1</span> QQ-Plot</a></li>
+  <li><a href="#shapiro-wilk-test" id="toc-shapiro-wilk-test" class="nav-link" data-scroll-target="#shapiro-wilk-test"><span class="header-section-number">5.2</span> Shapiro-Wilk Test</a></li>
+  <li><a href="#levene-test" id="toc-levene-test" class="nav-link" data-scroll-target="#levene-test"><span class="header-section-number">5.3</span> Levene Test</a></li>
+  <li><a href="#fligner-test" id="toc-fligner-test" class="nav-link" data-scroll-target="#fligner-test"><span class="header-section-number">5.4</span> Fligner Test</a></li>
+  <li><a href="#kruskal-wallis" id="toc-kruskal-wallis" class="nav-link" data-scroll-target="#kruskal-wallis"><span class="header-section-number">5.5</span> Kruskal-Wallis</a></li>
+  </ul></li>
+  <li><a href="#anova-post-hoc-testing" id="toc-anova-post-hoc-testing" class="nav-link" data-scroll-target="#anova-post-hoc-testing"><span class="header-section-number">6</span> ANOVA Post-Hoc Testing</a>
+  <ul class="collapse">
+  <li><a href="#tukey-kramer-test" id="toc-tukey-kramer-test" class="nav-link" data-scroll-target="#tukey-kramer-test"><span class="header-section-number">6.1</span> Tukey-Kramer Test</a></li>
+  <li><a href="#dunnetts-test" id="toc-dunnetts-test" class="nav-link" data-scroll-target="#dunnetts-test"><span class="header-section-number">6.2</span> Dunnett’s Test</a></li>
+  </ul></li>
+  <li><a href="#pearson-correlation" id="toc-pearson-correlation" class="nav-link" data-scroll-target="#pearson-correlation"><span class="header-section-number">7</span> Pearson Correlation</a>
+  <ul class="collapse">
+  <li><a href="#statistical-test-for-correlation" id="toc-statistical-test-for-correlation" class="nav-link" data-scroll-target="#statistical-test-for-correlation"><span class="header-section-number">7.1</span> Statistical Test for Correlation</a></li>
+  <li><a href="#correlation-matrix" id="toc-correlation-matrix" class="nav-link" data-scroll-target="#correlation-matrix"><span class="header-section-number">7.2</span> Correlation Matrix</a></li>
+  </ul></li>
+  <li><a href="#simple-linear-regression" id="toc-simple-linear-regression" class="nav-link" data-scroll-target="#simple-linear-regression"><span class="header-section-number">8</span> Simple Linear Regression</a>
+  <ul class="collapse">
+  <li><a href="#spearman-correlation-coefficient" id="toc-spearman-correlation-coefficient" class="nav-link" data-scroll-target="#spearman-correlation-coefficient"><span class="header-section-number">8.1</span> Spearman Correlation Coefficient</a></li>
+  <li><a href="#test-for-association" id="toc-test-for-association" class="nav-link" data-scroll-target="#test-for-association"><span class="header-section-number">8.2</span> Test for Association</a></li>
+  <li><a href="#qq-plots" id="toc-qq-plots" class="nav-link" data-scroll-target="#qq-plots"><span class="header-section-number">8.3</span> QQ-Plots</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">One-Way ANOVA and Simple Linear Regression</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Yang Chen </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">September 4, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<!---
+ Template for library/package imports that are needed for running the cheatsheet. 
+--->
+<section id="setup" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Setup</h1>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(AmesHousing)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reticulate)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">use_condaenv</span>(<span class="st">"msa"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>ames <span class="ot">&lt;-</span> <span class="fu">make_ordinal_ames</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> seaborn <span class="im">as</span> sns</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels <span class="im">as</span> sm</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.api <span class="im">as</span> sma</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> scipy.stats <span class="im">as</span> stats</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>What is each package used for?</p>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">pandas</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">numpy</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">seaborn</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-4" role="tab" aria-controls="tabset-1-4" aria-selected="false">matplotlib</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-5" role="tab" aria-controls="tabset-1-5" aria-selected="false">statsmodels</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p><code>pandas</code> library is an open-source data manipulation and analysis library for the Python programming language. It provides data structures and functions that make it easier to work with structured data, such as tabular data (similar to spreadsheets and SQL tables). Pandas is widely used in data analysis, data cleaning, data transformation, and data visualization tasks.</p>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p><code>numpy</code> (Numerical Python) is an open-source Python library that provides support for large, multi-dimensional arrays and matrices, as well as a variety of mathematical functions to operate on these arrays. It is a fundamental library for numerical and scientific computing in Python and is widely used in various fields such as data analysis, machine learning, physics, engineering, and more.</p>
+<p><code>numpy</code> is useful for its “vectorized” operations which help create performant code for operations.</p>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p><code>seaborn</code> is an open-source Python data visualization library based on Matplotlib. It provides a higher-level interface for creating informative and attractive statistical graphics. Seaborn is particularly well-suited for creating complex visualizations that showcase relationships and patterns in data, making it a popular choice among data analysts, scientists, and data visualization enthusiasts.</p>
+</div>
+<div id="tabset-1-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-4-tab">
+<p><code>matplotlib</code> is a widely-used open-source data visualization library for the Python programming language. It provides a comprehensive set of tools for creating a variety of static, animated, and interactive visualizations in Python. Matplotlib is particularly popular among scientists, engineers, data analysts, and researchers for creating publication-quality visualizations.</p>
+<p><code>matplotlib</code> can be used in combination with <code>seaborn</code> to help adjust low-level graphical details.</p>
+</div>
+<div id="tabset-1-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-5-tab">
+<p><code>statsmodels</code> is an open-source Python library that focuses on statistical modeling and hypothesis testing. It provides a wide range of tools and classes for estimating and interpreting various statistical models. Statsmodels is particularly useful for statisticians, economists, social scientists, and researchers who need to perform rigorous statistical analysis and hypothesis testing on their data.</p>
+<p>In particular, the summaries provided by <code>statsmodels</code> provides an R-like interface of useful tests and statistics that we would see executing similar code in R.</p>
+</div>
+</div>
+</div>
+<p>If you’re running the <code>reticulate</code> library in R you can run Python code in R. This also includes converting R objects into Python objects. For example, we can move R datasets to <code>pandas</code> dataframes:</p>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ames <span class="op">=</span> r.ames</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="honest-assessment-train-test-split" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Honest Assessment (Train-Test Split)</h1>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a train-test split where test is 30% of the data</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Setting the seed (random_state) ensures that we can reproduce our split</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Function returns a tuple so we can unpack it into separate variables</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>train, test <span class="op">=</span> train_test_split(ames, test_size<span class="op">=</span><span class="fl">0.3</span>, random_state<span class="op">=</span><span class="dv">123</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>train.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                              MS_SubClass  ...   Latitude
+2278  One_Story_1946_and_Newer_All_Styles  ...  41.992318
+1379  One_Story_1946_and_Newer_All_Styles  ...  42.031571
+2182     PUD_Multilevel_Split_Level_Foyer  ...  42.018973
+1436             Two_Story_1946_and_Newer  ...  42.017423
+1599         Two_Story_PUD_1946_and_Newer  ...  41.992133
+
+[5 rows x 81 columns]</code></pre>
+</div>
+</div>
+</section>
+<section id="bivariate-eda" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Bivariate EDA</h1>
+<section id="continuous-continuous-plots" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="continuous-continuous-plots"><span class="header-section-number">3.1</span> Continuous-Continuous Plots</h2>
+<!---
+ $A:
+ warning: false 
+--->
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.relplot(data<span class="op">=</span>train, y<span class="op">=</span>train[<span class="st">"Sale_Price"</span>] <span class="op">/</span> <span class="dv">1000</span>, x<span class="op">=</span><span class="st">"Gr_Liv_Area"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(ylabel<span class="op">=</span><span class="st">"Sales Price (Thousands $)"</span>, xlabel<span class="op">=</span><span class="st">"Greater Living Area (Sqft)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="245"></p>
+</div>
+</div>
+</section>
+<section id="continuous-categorical-plots" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="continuous-categorical-plots"><span class="header-section-number">3.2</span> Continuous-Categorical Plots</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>train[<span class="st">"Exter_Qual"</span>] <span class="op">=</span> train[<span class="st">"Exter_Qual"</span>].cat.remove_unused_categories()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.catplot(data<span class="op">=</span>train, y<span class="op">=</span><span class="st">"Sale_Price"</span>, x<span class="op">=</span><span class="st">"Exter_Qual"</span>, kind<span class="op">=</span><span class="st">"bar"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>/opt/homebrew/Caskroom/miniconda/base/envs/msa/lib/python3.11/site-packages/seaborn/axisgrid.py:118: UserWarning: The figure layout has changed to tight
+  self._figure.tight_layout(*args, **kwargs)</code></pre>
+</div>
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(ylabel<span class="op">=</span><span class="st">"Sales Price (Thousands $)"</span>, xlabel<span class="op">=</span><span class="st">"Exterior Quality"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-6-3.png" class="img-fluid" width="244"></p>
+</div>
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-6-4.png" class="img-fluid" width="480"></p>
+</div>
+</div>
+</section>
+<section id="histogram-distribution" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="histogram-distribution"><span class="header-section-number">3.3</span> Histogram Distribution</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.displot(data<span class="op">=</span>ames, x<span class="op">=</span>ames[<span class="st">"Sale_Price"</span>] <span class="op">/</span> <span class="dv">1000</span>, hue<span class="op">=</span><span class="st">"Exter_Qual"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>/opt/homebrew/Caskroom/miniconda/base/envs/msa/lib/python3.11/site-packages/seaborn/axisgrid.py:118: UserWarning: The figure layout has changed to tight
+  self._figure.tight_layout(*args, **kwargs)</code></pre>
+</div>
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="st">"Sales Price (Thousands $)"</span>, ylabel<span class="op">=</span><span class="st">"Frequency"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-7-7.png" class="img-fluid" width="306"></p>
+</div>
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-7-8.png" class="img-fluid" width="588"></p>
+</div>
+</div>
+</section>
+<section id="kde-distribution" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="kde-distribution"><span class="header-section-number">3.4</span> KDE Distribution</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.displot(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    ames,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    x<span class="op">=</span>ames[<span class="st">"Sale_Price"</span>] <span class="op">/</span> <span class="dv">1000</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    hue<span class="op">=</span><span class="st">"Exter_Qual"</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    common_norm<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    kind<span class="op">=</span><span class="st">"kde"</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    fill<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>/opt/homebrew/Caskroom/miniconda/base/envs/msa/lib/python3.11/site-packages/seaborn/axisgrid.py:118: UserWarning: The figure layout has changed to tight
+  self._figure.tight_layout(*args, **kwargs)</code></pre>
+</div>
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ax.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="st">"Sales Price (Thousands $)"</span>, ylabel<span class="op">=</span><span class="st">"Density"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-11.png" class="img-fluid" width="306"></p>
+</div>
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-12.png" class="img-fluid" width="588"></p>
+</div>
+</div>
+<!---
+ $A:
+ warning: false 
+--->
+</section>
+<section id="box-plot" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="box-plot"><span class="header-section-number">3.5</span> Box Plot</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.catplot(ames, x<span class="op">=</span><span class="st">"Exter_Qual"</span>, y<span class="op">=</span><span class="st">"Sale_Price"</span>, kind<span class="op">=</span><span class="st">"box"</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-9-15.png" class="img-fluid" width="480"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="one-way-anova" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> One-Way ANOVA</h1>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">TODO</span><span class="co">: Add markdown documentation</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.formula.api <span class="im">as</span> smf</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Linear regression approach to ANOVA by fitting a model with exterior qual.</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="co"># C(&lt;var&gt;) is the statsmodels equivalent of factor() in R</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> smf.ols(<span class="st">"Sale_Price ~ C(Exter_Qual)"</span>, data<span class="op">=</span>train).fit()</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>model.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="simpletable table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>OLS Regression Results</caption>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dep. Variable:</td>
+<td>Sale_Price</td>
+<td data-quarto-table-cell-role="th">R-squared:</td>
+<td>0.493</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Model:</td>
+<td>OLS</td>
+<td data-quarto-table-cell-role="th">Adj. R-squared:</td>
+<td>0.492</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Method:</td>
+<td>Least Squares</td>
+<td data-quarto-table-cell-role="th">F-statistic:</td>
+<td>663.9</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Date:</td>
+<td>Mon, 04 Sep 2023</td>
+<td data-quarto-table-cell-role="th">Prob (F-statistic):</td>
+<td>2.14e-301</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Time:</td>
+<td>22:20:52</td>
+<td data-quarto-table-cell-role="th">Log-Likelihood:</td>
+<td>-25391.</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">No. Observations:</td>
+<td>2051</td>
+<td data-quarto-table-cell-role="th">AIC:</td>
+<td>5.079e+04</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Df Residuals:</td>
+<td>2047</td>
+<td data-quarto-table-cell-role="th">BIC:</td>
+<td>5.081e+04</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Df Model:</td>
+<td>3</td>
+<td data-quarto-table-cell-role="th"></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Covariance Type:</td>
+<td>nonrobust</td>
+<td data-quarto-table-cell-role="th"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table class="simpletable table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td></td>
+<td data-quarto-table-cell-role="th">coef</td>
+<td data-quarto-table-cell-role="th">std err</td>
+<td data-quarto-table-cell-role="th">t</td>
+<td data-quarto-table-cell-role="th">P&gt;|t|</td>
+<td data-quarto-table-cell-role="th">[0.025</td>
+<td data-quarto-table-cell-role="th">0.975]</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Intercept</td>
+<td>8.741e+04</td>
+<td>1.11e+04</td>
+<td>7.882</td>
+<td>0.000</td>
+<td>6.57e+04</td>
+<td>1.09e+05</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">C(Exter_Qual)[T.Typical]</td>
+<td>5.687e+04</td>
+<td>1.12e+04</td>
+<td>5.074</td>
+<td>0.000</td>
+<td>3.49e+04</td>
+<td>7.89e+04</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">C(Exter_Qual)[T.Good]</td>
+<td>1.444e+05</td>
+<td>1.13e+04</td>
+<td>12.780</td>
+<td>0.000</td>
+<td>1.22e+05</td>
+<td>1.67e+05</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">C(Exter_Qual)[T.Excellent]</td>
+<td>2.849e+05</td>
+<td>1.28e+04</td>
+<td>22.180</td>
+<td>0.000</td>
+<td>2.6e+05</td>
+<td>3.1e+05</td>
+</tr>
+</tbody>
+</table>
+<table class="simpletable table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Omnibus:</td>
+<td>692.330</td>
+<td data-quarto-table-cell-role="th">Durbin-Watson:</td>
+<td>2.009</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Prob(Omnibus):</td>
+<td>0.000</td>
+<td data-quarto-table-cell-role="th">Jarque-Bera (JB):</td>
+<td>4656.041</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Skew:</td>
+<td>1.420</td>
+<td data-quarto-table-cell-role="th">Prob(JB):</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Kurtosis:</td>
+<td>9.813</td>
+<td data-quarto-table-cell-role="th">Cond. No.</td>
+<td>21.7</td>
+</tr>
+</tbody>
+</table>
+<br><br>Notes:<br>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.
+</div>
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>sma.stats.anova_lm(model, typ<span class="op">=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     sum_sq      df           F         PR(&gt;F)
+C(Exter_Qual)  6.614593e+12     3.0  663.942552  2.143702e-301
+Residual       6.797813e+12  2047.0         NaN            NaN</code></pre>
+</div>
+</div>
+<section id="alternative-method-using-anova_oneway" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="alternative-method-using-anova_oneway"><span class="header-section-number">4.1</span> Alternative Method Using <code>anova_oneway</code></h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>sm.stats.oneway.anova_oneway(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>    train[<span class="st">"Sale_Price"</span>],</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>    groups<span class="op">=</span>train[<span class="st">"Exter_Qual"</span>],</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>    use_var<span class="op">=</span><span class="st">"equal"</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>    welch_correction<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;class 'statsmodels.stats.base.HolderTuple'&gt;
+statistic = 663.9425520223926
+pvalue = 2.1437019005998585e-301
+df = (3.0, 2047.0)
+df_num = 3.0
+df_denom = 2047.0
+nobs_t = 2051.0
+n_groups = 4
+means = array([372342.7721519 ,  87410.40740741, 231856.75285714, 144284.92690763])
+nobs = array([  79.,   27.,  700., 1245.])
+vars_ = array([1.19696698e+10, 1.52817220e+09, 4.96364326e+09, 1.89297368e+09])
+use_var = 'equal'
+welch_correction = False
+tuple = (663.9425520223926, 2.1437019005998585e-301)</code></pre>
+</div>
+</div>
+</section>
+<section id="alternative-method-using-scipy" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="alternative-method-using-scipy"><span class="header-section-number">4.2</span> Alternative Method Using <code>scipy</code></h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>stats.f_oneway(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Excellent"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Good"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Typical"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Fair"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>F_onewayResult(statistic=663.9425520223925, pvalue=2.1437019005998585e-301)</code></pre>
+</div>
+</div>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>train[<span class="st">"pred_anova"</span>] <span class="op">=</span> model.predict()</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>train[<span class="st">"resid_anova"</span>] <span class="op">=</span> model.resid</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>train[[<span class="st">"Sale_Price"</span>, <span class="st">"pred_anova"</span>, <span class="st">"resid_anova"</span>]].head(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Sale_Price     pred_anova    resid_anova
+2278      130000  144284.926908  -14284.926908
+1379      109900  144284.926908  -34384.926908
+2182      140000  144284.926908   -4284.926908
+1436      207500  231856.752857  -24356.752857
+1599       98000  144284.926908  -46284.926908
+452       196000  231856.752857  -35856.752857
+585       256900  144284.926908  112615.073092
+1078      154000  231856.752857  -77856.752857
+2452      290000  231856.752857   58143.247143
+1658      175000  231856.752857  -56856.752857</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="testing-assumptions" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Testing Assumptions</h1>
+<section id="qq-plot" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="qq-plot"><span class="header-section-number">5.1</span> QQ-Plot</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>sma.qqplot(train[<span class="st">"resid_anova"</span>])</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-14-17.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="shapiro-wilk-test" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="shapiro-wilk-test"><span class="header-section-number">5.2</span> Shapiro-Wilk Test</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>stats.shapiro(model.resid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>ShapiroResult(statistic=0.9174789786338806, pvalue=4.540434210506634e-32)</code></pre>
+</div>
+</div>
+</section>
+<section id="levene-test" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="levene-test"><span class="header-section-number">5.3</span> Levene Test</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>stats.levene(</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Excellent"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Good"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Typical"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Fair"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>LeveneResult(statistic=65.87759543050396, pvalue=1.1590149512173662e-40)</code></pre>
+</div>
+</div>
+</section>
+<section id="fligner-test" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="fligner-test"><span class="header-section-number">5.4</span> Fligner Test</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>stats.fligner(</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Excellent"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Good"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Typical"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Fair"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>FlignerResult(statistic=181.57626347457713, pvalue=4.027701838364485e-39)</code></pre>
+</div>
+</div>
+</section>
+<section id="kruskal-wallis" class="level2" data-number="5.5">
+<h2 data-number="5.5" class="anchored" data-anchor-id="kruskal-wallis"><span class="header-section-number">5.5</span> Kruskal-Wallis</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>stats.kruskal(</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Excellent"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Good"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Typical"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    train.loc[train[<span class="st">"Exter_Qual"</span>] <span class="op">==</span> <span class="st">"Fair"</span>, <span class="st">"Sale_Price"</span>],</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>KruskalResult(statistic=980.2665302456622, pvalue=3.434646694236542e-212)</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="anova-post-hoc-testing" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> ANOVA Post-Hoc Testing</h1>
+<section id="tukey-kramer-test" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="tukey-kramer-test"><span class="header-section-number">6.1</span> Tukey-Kramer Test</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> statsmodels.stats.multicomp <span class="im">as</span> mc</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>comp <span class="op">=</span> mc.MultiComparison(train[<span class="st">"Sale_Price"</span>], train[<span class="st">"Exter_Qual"</span>])</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>ph_res <span class="op">=</span> comp.tukeyhsd(alpha<span class="op">=</span><span class="fl">0.05</span>)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>ph_res.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="simpletable table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>Multiple Comparison of Means - Tukey HSD, FWER=0.05</caption>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">group1</td>
+<td data-quarto-table-cell-role="th">group2</td>
+<td data-quarto-table-cell-role="th">meandiff</td>
+<td data-quarto-table-cell-role="th">p-adj</td>
+<td data-quarto-table-cell-role="th">lower</td>
+<td data-quarto-table-cell-role="th">upper</td>
+<td data-quarto-table-cell-role="th">reject</td>
+</tr>
+<tr class="even">
+<td>Excellent</td>
+<td>Fair</td>
+<td>-284932.3647</td>
+<td>0.0</td>
+<td>-317962.4284</td>
+<td>-251902.3011</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<td>Excellent</td>
+<td>Good</td>
+<td>-140486.0193</td>
+<td>0.0</td>
+<td>-158071.6548</td>
+<td>-122900.3837</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<td>Excellent</td>
+<td>Typical</td>
+<td>-228057.8452</td>
+<td>0.0</td>
+<td>-245248.7081</td>
+<td>-210866.9824</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<td>Fair</td>
+<td>Good</td>
+<td>144446.3454</td>
+<td>0.0</td>
+<td>115386.8407</td>
+<td>173505.8502</td>
+<td>True</td>
+</tr>
+<tr class="even">
+<td>Fair</td>
+<td>Typical</td>
+<td>56874.5195</td>
+<td>0.0</td>
+<td>28052.2017</td>
+<td>85696.8374</td>
+<td>True</td>
+</tr>
+<tr class="odd">
+<td>Good</td>
+<td>Typical</td>
+<td>-87571.8259</td>
+<td>0.0</td>
+<td>-94571.5032</td>
+<td>-80572.1487</td>
+<td>True</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>ph_res.plot_simultaneous()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-20-19.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+</section>
+<section id="dunnetts-test" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="dunnetts-test"><span class="header-section-number">6.2</span> Dunnett’s Test</h2>
+<p>Currently there is no Dunnett’s test implemented in Python.</p>
+</section>
+</section>
+<section id="pearson-correlation" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> Pearson Correlation</h1>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>np.corrcoef(train[<span class="st">"Gr_Liv_Area"</span>], train[<span class="st">"Sale_Price"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>array([[1.        , 0.69584201],
+       [0.69584201, 1.        ]])</code></pre>
+</div>
+</div>
+<section id="statistical-test-for-correlation" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="statistical-test-for-correlation"><span class="header-section-number">7.1</span> Statistical Test for Correlation</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>stats.pearsonr(train[<span class="st">"Gr_Liv_Area"</span>], train[<span class="st">"Sale_Price"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>PearsonRResult(statistic=0.6958420133893221, pvalue=6.980207969297806e-297)</code></pre>
+</div>
+</div>
+</section>
+<section id="correlation-matrix" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="correlation-matrix"><span class="header-section-number">7.2</span> Correlation Matrix</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>np.corrcoef(</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    train[[<span class="st">"Year_Built"</span>, <span class="st">"Total_Bsmt_SF"</span>, <span class="st">"First_Flr_SF"</span>, <span class="st">"Gr_Liv_Area"</span>, <span class="st">"Sale_Price"</span>]],</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    rowvar<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>array([[1.        , 0.42722628, 0.32717559, 0.23863599, 0.55703178],
+       [0.42722628, 1.        , 0.80658329, 0.45383515, 0.62538744],
+       [0.32717559, 0.80658329, 1.        , 0.57135986, 0.62067339],
+       [0.23863599, 0.45383515, 0.57135986, 1.        , 0.69584201],
+       [0.55703178, 0.62538744, 0.62067339, 0.69584201, 1.        ]])</code></pre>
+</div>
+</div>
+<p>Correlation matrix pair plots:</p>
+<!---
+ $A:
+ warning: false 
+--->
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>ax <span class="op">=</span> sns.pairplot(</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    train[[<span class="st">"Year_Built"</span>, <span class="st">"Total_Bsmt_SF"</span>, <span class="st">"First_Flr_SF"</span>, <span class="st">"Gr_Liv_Area"</span>, <span class="st">"Sale_Price"</span>]]</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-24-21.png" class="img-fluid" width="1200"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="simple-linear-regression" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Simple Linear Regression</h1>
+<section id="spearman-correlation-coefficient" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="spearman-correlation-coefficient"><span class="header-section-number">8.1</span> Spearman Correlation Coefficient</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>stats.spearmanr(train[<span class="st">'Gr_Liv_Area'</span>], train[<span class="st">'Sale_Price'</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>SignificanceResult(statistic=0.719959092874937, pvalue=0.0)</code></pre>
+</div>
+</div>
+</section>
+<section id="test-for-association" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="test-for-association"><span class="header-section-number">8.2</span> Test for Association</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>model_slr <span class="op">=</span> smf.ols(<span class="st">"Sale_Price ~ Gr_Liv_Area"</span>, data<span class="op">=</span>train).fit()</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>model_slr.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<table class="simpletable table table-sm table-striped small" data-quarto-postprocess="true">
+<caption>OLS Regression Results</caption>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Dep. Variable:</td>
+<td>Sale_Price</td>
+<td data-quarto-table-cell-role="th">R-squared:</td>
+<td>0.484</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Model:</td>
+<td>OLS</td>
+<td data-quarto-table-cell-role="th">Adj. R-squared:</td>
+<td>0.484</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Method:</td>
+<td>Least Squares</td>
+<td data-quarto-table-cell-role="th">F-statistic:</td>
+<td>1923.</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Date:</td>
+<td>Mon, 04 Sep 2023</td>
+<td data-quarto-table-cell-role="th">Prob (F-statistic):</td>
+<td>6.98e-297</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Time:</td>
+<td>22:20:58</td>
+<td data-quarto-table-cell-role="th">Log-Likelihood:</td>
+<td>-25409.</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">No. Observations:</td>
+<td>2051</td>
+<td data-quarto-table-cell-role="th">AIC:</td>
+<td>5.082e+04</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Df Residuals:</td>
+<td>2049</td>
+<td data-quarto-table-cell-role="th">BIC:</td>
+<td>5.083e+04</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Df Model:</td>
+<td>1</td>
+<td data-quarto-table-cell-role="th"></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Covariance Type:</td>
+<td>nonrobust</td>
+<td data-quarto-table-cell-role="th"></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<table class="simpletable table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td></td>
+<td data-quarto-table-cell-role="th">coef</td>
+<td data-quarto-table-cell-role="th">std err</td>
+<td data-quarto-table-cell-role="th">t</td>
+<td data-quarto-table-cell-role="th">P&gt;|t|</td>
+<td data-quarto-table-cell-role="th">[0.025</td>
+<td data-quarto-table-cell-role="th">0.975]</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Intercept</td>
+<td>1.577e+04</td>
+<td>4006.043</td>
+<td>3.937</td>
+<td>0.000</td>
+<td>7913.812</td>
+<td>2.36e+04</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Gr_Liv_Area</td>
+<td>110.5452</td>
+<td>2.521</td>
+<td>43.857</td>
+<td>0.000</td>
+<td>105.602</td>
+<td>115.488</td>
+</tr>
+</tbody>
+</table>
+<table class="simpletable table table-sm table-striped small" data-quarto-postprocess="true">
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Omnibus:</td>
+<td>342.298</td>
+<td data-quarto-table-cell-role="th">Durbin-Watson:</td>
+<td>2.050</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Prob(Omnibus):</td>
+<td>0.000</td>
+<td data-quarto-table-cell-role="th">Jarque-Bera (JB):</td>
+<td>4078.850</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">Skew:</td>
+<td>0.396</td>
+<td data-quarto-table-cell-role="th">Prob(JB):</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">Kurtosis:</td>
+<td>9.863</td>
+<td data-quarto-table-cell-role="th">Cond. No.</td>
+<td>4.96e+03</td>
+</tr>
+</tbody>
+</table>
+<br><br>Notes:<br>[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.<br>[2] The condition number is large, 4.96e+03. This might indicate that there are<br>strong multicollinearity or other numerical problems.
+</div>
+</div>
+</section>
+<section id="qq-plots" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="qq-plots"><span class="header-section-number">8.3</span> QQ-Plots</h2>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>train[<span class="st">'pred_slr'</span>] <span class="op">=</span> model_slr.predict()</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>train[<span class="st">'resid_slr'</span>] <span class="op">=</span> model_slr.resid</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a>train[[<span class="st">'Sale_Price'</span>, <span class="st">'pred_anova'</span>, <span class="st">'pred_slr'</span>]].head(<span class="dv">10</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>      Sale_Price     pred_anova       pred_slr
+2278      130000  144284.926908  240619.031902
+1379      109900  144284.926908  115702.987926
+2182      140000  144284.926908  134274.576765
+1436      207500  231856.752857  198390.776328
+1599       98000  144284.926908  136485.480198
+452       196000  231856.752857  160142.146934
+585       256900  144284.926908  307609.405929
+1078      154000  231856.752857  195516.601865
+2452      290000  231856.752857  295007.256359
+1658      175000  231856.752857  208450.386949</code></pre>
+</div>
+</div>
+<div class="cell">
+<details open="">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>sma.qqplot(train[<span class="st">'resid_slr'</span>])</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-28-23.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'default';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../../pycheatsheet/EDA/index.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Exploratory Data Analysis</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">Made with ❤️ by the MSA Class of 2024</div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>

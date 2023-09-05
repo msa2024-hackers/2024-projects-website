@@ -14,20 +14,6 @@
     "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
   },
   {
-    "objectID": "projects/post-with-code/index.html",
-    "href": "projects/post-with-code/index.html",
-    "title": "Post With Code",
-    "section": "",
-    "text": "This is a post with executable code."
-  },
-  {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "MSA 2024 Hackers",
-    "section": "",
-    "text": "1 TITLE HERE\nThis is a remarkable description crafted carefully with the wills and souls of the MSA Class of 2024. Our communication skills are second to none and we eat, sleep, and breathe data, coffee, and the blood of our enemies.\nIf you want to learn more about a project or see its source code, click on one of the cards below!\n\n\n2 Projects\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\nHarlow Malloc\n\n\nAug 12, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\n\n\n\n\nTristan O’Malley\n\n\nAug 9, 2023\n\n\n\n\n\n\n\n\nNo matching items"
-  },
-  {
     "objectID": "pycheatsheet/index.html",
     "href": "pycheatsheet/index.html",
     "title": "MSA Analytics Python Cheatsheet",
@@ -35,67 +21,11 @@
     "text": "The Python Cheatsheet is a resource for implementing statistical concepts in Python. Concepts and code snippets are taken from lectures, the IAA Foundations book. Custom implementations may also be provided for concepts that have no specific library implementations."
   },
   {
-    "objectID": "pycheatsheet/index.html#one-hot-encoding",
-    "href": "pycheatsheet/index.html#one-hot-encoding",
-    "title": "Exploratory Data Analysis",
-    "section": "2.1 One-Hot Encoding",
-    "text": "2.1 One-Hot Encoding\n\n#\n\n# Use the generator version of setting the seed instead\nrng = np.random.default_rng(1234)\n\nx1 = np.repeat([\"A\", \"B\", \"C\"], 10)\nx2 = np.repeat([\"Z\", \"X\", \"Y\", \"W\", \"V\", \"U\"], 5)\n\n# Generate 30 values from different Normal distributions\ny = np.concatenate(\n    [\n        rng.normal(loc=2.0, scale=1.0, size=10),\n        rng.normal(loc=1.0, scale=1.0, size=10),\n        rng.normal(loc=0.0, scale=1.0, size=10),\n    ]\n)\ndata = np.array([x1, x2, y]).T\ncolumn_names = [\"x1\", \"x2\", \"y\"]\n\n\ndf = pd.DataFrame(data=data, columns=column_names)\ndf.head()\n\n  x1 x2                    y\n0  A  Z  0.39616319460369853\n1  A  Z    2.064099914003764\n2  A  Z   2.7408912958767258\n3  A  Z    2.152619193565653\n4  A  Z    2.863743891323332\n\n\nYou have to specify which columns should be one-hot encoded:\n\none_hot_encoded_data = pd.get_dummies(df, columns=[\"x1\", \"x2\"])\none_hot_encoded_data.head()\n\n                     y  x1_A   x1_B   x1_C  ...   x2_W   x2_X   x2_Y  x2_Z\n0  0.39616319460369853  True  False  False  ...  False  False  False  True\n1    2.064099914003764  True  False  False  ...  False  False  False  True\n2   2.7408912958767258  True  False  False  ...  False  False  False  True\n3    2.152619193565653  True  False  False  ...  False  False  False  True\n4    2.863743891323332  True  False  False  ...  False  False  False  True\n\n[5 rows x 10 columns]"
-  },
-  {
-    "objectID": "pycheatsheet/index.html#frequency-bar-plot",
-    "href": "pycheatsheet/index.html#frequency-bar-plot",
-    "title": "Exploratory Data Analysis",
-    "section": "2.2 Frequency Bar Plot",
-    "text": "2.2 Frequency Bar Plot\n\nax = sns.countplot(x=\"Heating_QC\", data=ames, color=\"orange\")\nax.set(\n    xlabel=\"Heating Quality\", ylabel=\"Frequency\", title=\"Bar Graph of Heating System\"\n)\nplt.show()"
-  },
-  {
     "objectID": "pycheatsheet/EDA/index.html",
     "href": "pycheatsheet/EDA/index.html",
     "title": "Exploratory Data Analysis",
     "section": "",
     "text": "Code\nlibrary(AmesHousing)\nlibrary(reticulate)\n\nuse_condaenv(\"msa\")\n\names &lt;- make_ordinal_ames()\n\n\n\n\nCode\nimport pandas as pd\nimport numpy as np\nimport seaborn as sns\nimport matplotlib.pyplot as plt\nimport statsmodels as sm\nimport statsmodels.api as sma\nimport scipy.stats as stats\n\n\nWhat is each package used for?\n\npandasnumpyseabornmatplotlibstatsmodels\n\n\npandas library is an open-source data manipulation and analysis library for the Python programming language. It provides data structures and functions that make it easier to work with structured data, such as tabular data (similar to spreadsheets and SQL tables). Pandas is widely used in data analysis, data cleaning, data transformation, and data visualization tasks.\n\n\nnumpy (Numerical Python) is an open-source Python library that provides support for large, multi-dimensional arrays and matrices, as well as a variety of mathematical functions to operate on these arrays. It is a fundamental library for numerical and scientific computing in Python and is widely used in various fields such as data analysis, machine learning, physics, engineering, and more.\nnumpy is useful for its “vectorized” operations which help create performant code for operations.\n\n\nseaborn is an open-source Python data visualization library based on Matplotlib. It provides a higher-level interface for creating informative and attractive statistical graphics. Seaborn is particularly well-suited for creating complex visualizations that showcase relationships and patterns in data, making it a popular choice among data analysts, scientists, and data visualization enthusiasts.\n\n\nmatplotlib is a widely-used open-source data visualization library for the Python programming language. It provides a comprehensive set of tools for creating a variety of static, animated, and interactive visualizations in Python. Matplotlib is particularly popular among scientists, engineers, data analysts, and researchers for creating publication-quality visualizations.\nmatplotlib can be used in combination with seaborn to help adjust low-level graphical details.\n\n\nstatsmodels is an open-source Python library that focuses on statistical modeling and hypothesis testing. It provides a wide range of tools and classes for estimating and interpreting various statistical models. Statsmodels is particularly useful for statisticians, economists, social scientists, and researchers who need to perform rigorous statistical analysis and hypothesis testing on their data.\nIn particular, the summaries provided by statsmodels provides an R-like interface of useful tests and statistics that we would see executing similar code in R.\n\n\n\nIf you’re running the reticulate library in R you can run Python code in R. This also includes converting R objects into Python objects. For example, we can move R datasets to pandas dataframes:\n\n\nCode\names = r.ames"
-  },
-  {
-    "objectID": "pycheatsheet/EDA/index.html#one-hot-encoding",
-    "href": "pycheatsheet/EDA/index.html#one-hot-encoding",
-    "title": "Exploratory Data Analysis",
-    "section": "2.1 One-Hot Encoding",
-    "text": "2.1 One-Hot Encoding\n\n#\n\n# Use the generator version of setting the seed instead\nrng = np.random.default_rng(1234)\n\nx1 = np.repeat([\"A\", \"B\", \"C\"], 10)\nx2 = np.repeat([\"Z\", \"X\", \"Y\", \"W\", \"V\", \"U\"], 5)\n\n# Generate 30 values from different Normal distributions\ny = np.concatenate(\n    [\n        rng.normal(loc=2.0, scale=1.0, size=10),\n        rng.normal(loc=1.0, scale=1.0, size=10),\n        rng.normal(loc=0.0, scale=1.0, size=10),\n    ]\n)\ndata = np.array([x1, x2, y]).T\ncolumn_names = [\"x1\", \"x2\", \"y\"]\n\n\ndf = pd.DataFrame(data=data, columns=column_names)\ndf.head()\n\n  x1 x2                    y\n0  A  Z  0.39616319460369853\n1  A  Z    2.064099914003764\n2  A  Z   2.7408912958767258\n3  A  Z    2.152619193565653\n4  A  Z    2.863743891323332\n\n\nYou have to specify which columns should be one-hot encoded:\n\none_hot_encoded_data = pd.get_dummies(df, columns=[\"x1\", \"x2\"])\none_hot_encoded_data.head()\n\n                     y  x1_A   x1_B   x1_C  ...   x2_W   x2_X   x2_Y  x2_Z\n0  0.39616319460369853  True  False  False  ...  False  False  False  True\n1    2.064099914003764  True  False  False  ...  False  False  False  True\n2   2.7408912958767258  True  False  False  ...  False  False  False  True\n3    2.152619193565653  True  False  False  ...  False  False  False  True\n4    2.863743891323332  True  False  False  ...  False  False  False  True\n\n[5 rows x 10 columns]"
-  },
-  {
-    "objectID": "pycheatsheet/EDA/index.html#frequency-bar-plot",
-    "href": "pycheatsheet/EDA/index.html#frequency-bar-plot",
-    "title": "Exploratory Data Analysis",
-    "section": "2.2 Frequency Bar Plot",
-    "text": "2.2 Frequency Bar Plot\n\nax = sns.countplot(x=\"Heating_QC\", data=ames, color=\"orange\")\nax.set(\n    xlabel=\"Heating Quality\", ylabel=\"Frequency\", title=\"Bar Graph of Heating System\"\n)\nplt.show()"
-  },
-  {
-    "objectID": "pycheatsheet/EDA/index.html#frequency-table",
-    "href": "pycheatsheet/EDA/index.html#frequency-table",
-    "title": "Exploratory Data Analysis",
-    "section": "2.3 Frequency Table",
-    "text": "2.3 Frequency Table\n\names[\"Heating_QC\"].value_counts()\n\nHeating_QC\nExcellent    1495\nTypical       864\nGood          476\nFair           92\nPoor            3\nName: count, dtype: int64"
-  },
-  {
-    "objectID": "pycheatsheet/EDA/index.html#frequency-histogram",
-    "href": "pycheatsheet/EDA/index.html#frequency-histogram",
-    "title": "Exploratory Data Analysis",
-    "section": "2.4 Frequency Histogram",
-    "text": "2.4 Frequency Histogram\n\nax = sns.histplot(x=ames[\"Sale_Price\"] / 1000, data=ames, color=\"blue\")\nax.set(\n    xlabel=\"Sales Price (Thousands $)\",\n    ylabel=\"Frequency\",\n    title=\"Histogram of Sales Price in Thousands of Dollars\",\n)\nplt.show()"
-  },
-  {
-    "objectID": "pycheatsheet/EDA/index.html#summary-statistics",
-    "href": "pycheatsheet/EDA/index.html#summary-statistics",
-    "title": "Exploratory Data Analysis",
-    "section": "2.5 Summary Statistics",
-    "text": "2.5 Summary Statistics\n\names[\"Sale_Price\"].describe()\n\ncount      2930.000000\nmean     180796.060068\nstd       79886.692357\nmin       12789.000000\n25%      129500.000000\n50%      160000.000000\n75%      213500.000000\nmax      755000.000000\nName: Sale_Price, dtype: float64\n\n\n\names.groupby(\"Exter_Qual\")[\"Sale_Price\"].describe()\n\n             count           mean            std  ...       50%       75%       max\nExter_Qual                                        ...                              \nPoor           0.0            NaN            NaN  ...       NaN       NaN       NaN\nFair          35.0   89923.742857   38013.502946  ...   85000.0  115750.0  200000.0\nTypical     1799.0  143373.968316   41503.853558  ...  139000.0  163000.0  415000.0\nGood         989.0  230756.384226   70411.143067  ...  219500.0  267300.0  745000.0\nExcellent    107.0  377918.616822  106987.707970  ...  370967.0  442520.5  755000.0\n\n[5 rows x 8 columns]"
-  },
-  {
-    "objectID": "pycheatsheet/EDA/index.html#kde-plot-overlay",
-    "href": "pycheatsheet/EDA/index.html#kde-plot-overlay",
-    "title": "Exploratory Data Analysis",
-    "section": "2.6 KDE Plot Overlay",
-    "text": "2.6 KDE Plot Overlay\n\nx = ames[\"Sale_Price\"] / 1000\nsns.histplot(x, kde=True, color=\"blue\")\n\n\n\n\n\nax = sns.displot(data=ames, x=ames[\"Sale_Price\"] / 1000, kde=True)\n\n/opt/homebrew/Caskroom/miniconda/base/envs/msa/lib/python3.11/site-packages/seaborn/axisgrid.py:118: UserWarning: The figure layout has changed to tight\n  self._figure.tight_layout(*args, **kwargs)\n\nax.set(xlabel=\"Sales Price (Thousands $)\", ylabel=\"Frequency\")\n\n\n\n\nBroken down my levels of a categorical variable:\n\nax = sns.displot(data=ames, x=ames[\"Sale_Price\"] / 1000, hue=\"Central_Air\")\n\n/opt/homebrew/Caskroom/miniconda/base/envs/msa/lib/python3.11/site-packages/seaborn/axisgrid.py:118: UserWarning: The figure layout has changed to tight\n  self._figure.tight_layout(*args, **kwargs)\n\nax.set(xlabel=\"Sales Price (Thousands $)\", ylabel=\"Frequency\")"
   },
   {
     "objectID": "pycheatsheet/EDA/index.html#proportions-test",
@@ -112,25 +42,11 @@
     "text": "11.2 One-Sample Mean Test\n\n\nCode\nd = sm.stats.weightstats.DescrStatsW(ames[\"Sale_Price\"])\n\nd.ttest_mean(value=178000, alternative=\"two-sided\")\n\n\n(1.8945491101378902, 0.058250572779629556, 2929.0)\n\n\nCode\nd.ttest_mean(value=178000, alternative=\"larger\")\n\n\n(1.8945491101378902, 0.029125286389814778, 2929.0)\n\n\nCode\nd.ttest_mean(value=178000, alternative=\"smaller\")\n\n\n(1.8945491101378902, 0.9708747136101853, 2929.0)\n\n\n\n\nDescrStatsW.ttest_mean\n\nttest_mean(self, value=0, alternative=“two-sided”)\n\nttest of Null hypothesis that mean is equal to value.\nThe alternative hypothesis H1 is defined by the following\n\n“two-sided”: H1: mean not equal to value\n“larger”: H1: mean larger than value\n“smaller”: H1: mean smaller than value\n\n\nParameters\n\n\n\n\n\n\n\n\n\nType\nDefault\nDetails\n\n\n\n\nvalue\nfloat or array\n0\nHypothesized value for the mean\n\n\nalternative\nstr\ntwo-sided\nThe alternative hypothesis, H1"
   },
   {
-    "objectID": "pycheatsheet/EDA/index.html#descrstatsw.ttest_mean",
-    "href": "pycheatsheet/EDA/index.html#descrstatsw.ttest_mean",
-    "title": "Exploratory Data Analysis",
-    "section": "DescrStatsW.ttest_mean",
-    "text": "DescrStatsW.ttest_mean"
-  },
-  {
     "objectID": "pycheatsheet/EDA/index.html#normality-tests",
     "href": "pycheatsheet/EDA/index.html#normality-tests",
     "title": "Exploratory Data Analysis",
     "section": "12.1 Normality Tests",
     "text": "12.1 Normality Tests\n\n\nCode\nsma.stats.diagnostic.normal_ad(ames.loc[ames[\"Central_Air\"] == \"Y\", \"Sale_Price\"])\n\n\n(91.05549995840602, 0.0)\n\n\nCode\nsma.stats.diagnostic.normal_ad(ames.loc[ames[\"Central_Air\"] == \"N\", \"Sale_Price\"])\n\n\n(1.5325564930342637, 0.0005839876642171221)"
-  },
-  {
-    "objectID": "pycheatsheet/EDA/index.html#equality-of-variance-tests",
-    "href": "pycheatsheet/EDA/index.html#equality-of-variance-tests",
-    "title": "Exploratory Data Analysis",
-    "section": "12.2 Equality of Variance Tests",
-    "text": "12.2 Equality of Variance Tests\n\n\nCode\nca_yes = ames[ames[\"Central_Air\"] == \"Y\"]\nca_no = ames[ames[\"Central_Air\"] == \"N\"]\n\n\n\n\nCode\n# TODO: Create markdown documentation below function for better readability\ndef f_test(x, y):\n    \"\"\"F-test of Null hypothesis that variances are equal.\n\n    Calculates the F-test of two sample inputs by dividing their\n    variances. The function calculates a p-value based off the\n    F-distribution using x.size - 1 degrees of freedom and y.size - 1\n    degrees of freedom.\n\n    Parameters\n    __________\n    x : array_like\n        Array of input sample to be used in the numerator.\n    y : array_like\n        Array of input sample to be used in the denominator.\n\n    Returns\n    _______\n    f : float\n        Calculated F-statistic\n    p_value : float\n        P-value calculated from the F-distribution\n    \"\"\"\n    x = np.array(x)\n    y = np.array(y)\n    f = np.var(x, ddof=1) / np.var(y, ddof=1)  # Calculates F-statistic\n\n    df_x = x.size - 1  # Degrees of freedom x\n    df_y = y.size - 1  # Degrees of freedom y\n    p_value = 1 - stats.f.cdf(f, df_x, df_y)  # Calculate p-value of F-statistic\n\n    return f, p_value\n\n\nf_test(ca_yes[\"Sale_Price\"], ca_no[\"Sale_Price\"])\n\n\n(4.4287439090727085, 1.1102230246251565e-16)"
   },
   {
     "objectID": "pycheatsheet/EDA/index.html#equality-of-variance-f-test",
@@ -152,5 +68,320 @@
     "title": "Exploratory Data Analysis",
     "section": "12.4 Two-Sample Means T-Test",
     "text": "12.4 Two-Sample Means T-Test\n\n\nCode\n# TODO: Add markdown documentation\nstats.ttest_ind(ca_yes[\"Sale_Price\"], ca_no[\"Sale_Price\"], equal_var=False)\n\n\nTtestResult(statistic=27.43321766127874, pvalue=8.78493646231923e-88, df=336.0630297026842)"
+  },
+  {
+    "objectID": "projects/post-with-code/index.html",
+    "href": "projects/post-with-code/index.html",
+    "title": "Post With Code",
+    "section": "",
+    "text": "This is a post with executable code."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "MSA 2024 Hackers",
+    "section": "",
+    "text": "1 TITLE HERE\nThis is a remarkable description crafted carefully with the wills and souls of the MSA Class of 2024. Our communication skills are second to none and we eat, sleep, and breathe data, coffee, and the blood of our enemies.\nIf you want to learn more about a project or see its source code, click on one of the cards below!\n\n\n2 Projects\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPost With Code\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\nHarlow Malloc\n\n\nAug 12, 2023\n\n\n\n\n\n\n\n\n\n\n\n\nWelcome To My Blog\n\n\n\nnews\n\n\n\n\n\n\n\nTristan O’Malley\n\n\nAug 9, 2023\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html",
+    "href": "pycheatsheet/ANOVA-OLS/index.html",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "",
+    "text": "Code\nlibrary(AmesHousing)\nlibrary(reticulate)\n\nuse_condaenv(\"msa\")\n\names &lt;- make_ordinal_ames()\n\n\n\n\nCode\nimport pandas as pd\nimport numpy as np\nimport seaborn as sns\nimport matplotlib.pyplot as plt\nimport statsmodels as sm\nimport statsmodels.api as sma\nimport scipy.stats as stats\n\n\nWhat is each package used for?\n\npandasnumpyseabornmatplotlibstatsmodels\n\n\npandas library is an open-source data manipulation and analysis library for the Python programming language. It provides data structures and functions that make it easier to work with structured data, such as tabular data (similar to spreadsheets and SQL tables). Pandas is widely used in data analysis, data cleaning, data transformation, and data visualization tasks.\n\n\nnumpy (Numerical Python) is an open-source Python library that provides support for large, multi-dimensional arrays and matrices, as well as a variety of mathematical functions to operate on these arrays. It is a fundamental library for numerical and scientific computing in Python and is widely used in various fields such as data analysis, machine learning, physics, engineering, and more.\nnumpy is useful for its “vectorized” operations which help create performant code for operations.\n\n\nseaborn is an open-source Python data visualization library based on Matplotlib. It provides a higher-level interface for creating informative and attractive statistical graphics. Seaborn is particularly well-suited for creating complex visualizations that showcase relationships and patterns in data, making it a popular choice among data analysts, scientists, and data visualization enthusiasts.\n\n\nmatplotlib is a widely-used open-source data visualization library for the Python programming language. It provides a comprehensive set of tools for creating a variety of static, animated, and interactive visualizations in Python. Matplotlib is particularly popular among scientists, engineers, data analysts, and researchers for creating publication-quality visualizations.\nmatplotlib can be used in combination with seaborn to help adjust low-level graphical details.\n\n\nstatsmodels is an open-source Python library that focuses on statistical modeling and hypothesis testing. It provides a wide range of tools and classes for estimating and interpreting various statistical models. Statsmodels is particularly useful for statisticians, economists, social scientists, and researchers who need to perform rigorous statistical analysis and hypothesis testing on their data.\nIn particular, the summaries provided by statsmodels provides an R-like interface of useful tests and statistics that we would see executing similar code in R.\n\n\n\nIf you’re running the reticulate library in R you can run Python code in R. This also includes converting R objects into Python objects. For example, we can move R datasets to pandas dataframes:\n\n\nCode\names = r.ames"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#continuous-continuous-plots",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#continuous-continuous-plots",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "3.1 Continuous-Continuous Plots",
+    "text": "3.1 Continuous-Continuous Plots\n\n\n\nCode\nax = sns.relplot(data=train, y=train[\"Sale_Price\"] / 1000, x=\"Gr_Liv_Area\")\nax.set(ylabel=\"Sales Price (Thousands $)\", xlabel=\"Greater Living Area (Sqft)\")"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#continuous-categorical-plots",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#continuous-categorical-plots",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "3.2 Continuous-Categorical Plots",
+    "text": "3.2 Continuous-Categorical Plots\n\n\nCode\ntrain[\"Exter_Qual\"] = train[\"Exter_Qual\"].cat.remove_unused_categories()\n\nax = sns.catplot(data=train, y=\"Sale_Price\", x=\"Exter_Qual\", kind=\"bar\")\n\n\n/opt/homebrew/Caskroom/miniconda/base/envs/msa/lib/python3.11/site-packages/seaborn/axisgrid.py:118: UserWarning: The figure layout has changed to tight\n  self._figure.tight_layout(*args, **kwargs)\n\n\nCode\nax.set(ylabel=\"Sales Price (Thousands $)\", xlabel=\"Exterior Quality\")\n\n\n\n\n\nCode\nplt.show()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#histogram-distribution",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#histogram-distribution",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "3.3 Histogram Distribution",
+    "text": "3.3 Histogram Distribution\n\n\nCode\nax = sns.displot(data=ames, x=ames[\"Sale_Price\"] / 1000, hue=\"Exter_Qual\")\n\n\n/opt/homebrew/Caskroom/miniconda/base/envs/msa/lib/python3.11/site-packages/seaborn/axisgrid.py:118: UserWarning: The figure layout has changed to tight\n  self._figure.tight_layout(*args, **kwargs)\n\n\nCode\nax.set(xlabel=\"Sales Price (Thousands $)\", ylabel=\"Frequency\")\n\n\n\n\n\nCode\nplt.show()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#kde-distribution",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#kde-distribution",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "3.4 KDE Distribution",
+    "text": "3.4 KDE Distribution\n\n\nCode\nax = sns.displot(\n    ames,\n    x=ames[\"Sale_Price\"] / 1000,\n    hue=\"Exter_Qual\",\n    common_norm=False,\n    kind=\"kde\",\n    fill=True,\n)\n\n\n/opt/homebrew/Caskroom/miniconda/base/envs/msa/lib/python3.11/site-packages/seaborn/axisgrid.py:118: UserWarning: The figure layout has changed to tight\n  self._figure.tight_layout(*args, **kwargs)\n\n\nCode\nax.set(xlabel=\"Sales Price (Thousands $)\", ylabel=\"Density\")\n\n\n\n\n\nCode\nplt.show()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#box-plot",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#box-plot",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "3.5 Box Plot",
+    "text": "3.5 Box Plot\n\n\nCode\nax = sns.catplot(ames, x=\"Exter_Qual\", y=\"Sale_Price\", kind=\"box\")\nplt.show()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#alternative-method",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#alternative-method",
+    "title": "ANOVA (Simple, Complex) and Linear Regression (Simple, Multiple)",
+    "section": "4.1 Alternative Method",
+    "text": "4.1 Alternative Method\n\n\nCode\nsm.stats.oneway.anova_oneway(train['Sale_Price'], groups=train['Exter_Qual'], use_var='equal', welch_correction=False)\n\n\n&lt;class 'statsmodels.stats.base.HolderTuple'&gt;\nstatistic = 663.9425520223926\npvalue = 2.1437019005998585e-301\ndf = (3.0, 2047.0)\ndf_num = 3.0\ndf_denom = 2047.0\nnobs_t = 2051.0\nn_groups = 4\nmeans = array([372342.7721519 ,  87410.40740741, 231856.75285714, 144284.92690763])\nnobs = array([  79.,   27.,  700., 1245.])\nvars_ = array([1.19696698e+10, 1.52817220e+09, 4.96364326e+09, 1.89297368e+09])\nuse_var = 'equal'\nwelch_correction = False\ntuple = (663.9425520223926, 2.1437019005998585e-301)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#alternative-method-using-anova_oneway",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#alternative-method-using-anova_oneway",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "4.1 Alternative Method Using anova_oneway",
+    "text": "4.1 Alternative Method Using anova_oneway\n\n\nCode\nsm.stats.oneway.anova_oneway(\n    train[\"Sale_Price\"],\n    groups=train[\"Exter_Qual\"],\n    use_var=\"equal\",\n    welch_correction=False,\n)\n\n\n&lt;class 'statsmodels.stats.base.HolderTuple'&gt;\nstatistic = 663.9425520223926\npvalue = 2.1437019005998585e-301\ndf = (3.0, 2047.0)\ndf_num = 3.0\ndf_denom = 2047.0\nnobs_t = 2051.0\nn_groups = 4\nmeans = array([372342.7721519 ,  87410.40740741, 231856.75285714, 144284.92690763])\nnobs = array([  79.,   27.,  700., 1245.])\nvars_ = array([1.19696698e+10, 1.52817220e+09, 4.96364326e+09, 1.89297368e+09])\nuse_var = 'equal'\nwelch_correction = False\ntuple = (663.9425520223926, 2.1437019005998585e-301)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#alternative-method-using-scipy",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#alternative-method-using-scipy",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "4.2 Alternative Method Using scipy",
+    "text": "4.2 Alternative Method Using scipy\n\n\nCode\nstats.f_oneway(\n    train.loc[train[\"Exter_Qual\"] == \"Excellent\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Good\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Typical\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Fair\", \"Sale_Price\"],\n)\n\n\nF_onewayResult(statistic=663.9425520223925, pvalue=2.1437019005998585e-301)\n\n\n\n\nCode\ntrain[\"pred_anova\"] = model.predict()\ntrain[\"resid_anova\"] = model.resid\n\ntrain[[\"Sale_Price\", \"pred_anova\", \"resid_anova\"]].head(10)\n\n\n      Sale_Price     pred_anova    resid_anova\n2278      130000  144284.926908  -14284.926908\n1379      109900  144284.926908  -34384.926908\n2182      140000  144284.926908   -4284.926908\n1436      207500  231856.752857  -24356.752857\n1599       98000  144284.926908  -46284.926908\n452       196000  231856.752857  -35856.752857\n585       256900  144284.926908  112615.073092\n1078      154000  231856.752857  -77856.752857\n2452      290000  231856.752857   58143.247143\n1658      175000  231856.752857  -56856.752857"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#qq-plot",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#qq-plot",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "5.1 QQ-Plot",
+    "text": "5.1 QQ-Plot\n\n\nCode\nsma.qqplot(train[\"resid_anova\"])\nplt.show()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#shapiro-wilk-test",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#shapiro-wilk-test",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "5.2 Shapiro-Wilk Test",
+    "text": "5.2 Shapiro-Wilk Test\n\n\nCode\nstats.shapiro(model.resid)\n\n\nShapiroResult(statistic=0.9174789786338806, pvalue=4.540434210506634e-32)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#levene-test",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#levene-test",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "5.3 Levene Test",
+    "text": "5.3 Levene Test\n\n\nCode\nstats.levene(\n    train.loc[train[\"Exter_Qual\"] == \"Excellent\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Good\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Typical\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Fair\", \"Sale_Price\"],\n)\n\n\nLeveneResult(statistic=65.87759543050396, pvalue=1.1590149512173662e-40)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#fligner-test",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#fligner-test",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "5.4 Fligner Test",
+    "text": "5.4 Fligner Test\n\n\nCode\nstats.fligner(\n    train.loc[train[\"Exter_Qual\"] == \"Excellent\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Good\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Typical\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Fair\", \"Sale_Price\"],\n)\n\n\nFlignerResult(statistic=181.57626347457713, pvalue=4.027701838364485e-39)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#kruskal-wallis",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#kruskal-wallis",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "5.5 Kruskal-Wallis",
+    "text": "5.5 Kruskal-Wallis\n\n\nCode\nstats.kruskal(\n    train.loc[train[\"Exter_Qual\"] == \"Excellent\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Good\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Typical\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Fair\", \"Sale_Price\"],\n)\n\n\nKruskalResult(statistic=980.2665302456622, pvalue=3.434646694236542e-212)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#tukey-kramer-test",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#tukey-kramer-test",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "6.1 Tukey-Kramer Test",
+    "text": "6.1 Tukey-Kramer Test\n\n\nCode\nimport statsmodels.stats.multicomp as mc\n\ncomp = mc.MultiComparison(train[\"Sale_Price\"], train[\"Exter_Qual\"])\nph_res = comp.tukeyhsd(alpha=0.05)\nph_res.summary()\n\n\n\nMultiple Comparison of Means - Tukey HSD, FWER=0.05\n\n\ngroup1\ngroup2\nmeandiff\np-adj\nlower\nupper\nreject\n\n\nExcellent\nFair\n-284932.3647\n0.0\n-317962.4284\n-251902.3011\nTrue\n\n\nExcellent\nGood\n-140486.0193\n0.0\n-158071.6548\n-122900.3837\nTrue\n\n\nExcellent\nTypical\n-228057.8452\n0.0\n-245248.7081\n-210866.9824\nTrue\n\n\nFair\nGood\n144446.3454\n0.0\n115386.8407\n173505.8502\nTrue\n\n\nFair\nTypical\n56874.5195\n0.0\n28052.2017\n85696.8374\nTrue\n\n\nGood\nTypical\n-87571.8259\n0.0\n-94571.5032\n-80572.1487\nTrue\n\n\n\n\n\n\n\nCode\nph_res.plot_simultaneous()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#dunnetts-test",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#dunnetts-test",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "6.2 Dunnett’s Test",
+    "text": "6.2 Dunnett’s Test\nCurrently there is no Dunnett’s test implemented in Python."
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#statistical-test-for-correlation",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#statistical-test-for-correlation",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "7.1 Statistical Test for Correlation",
+    "text": "7.1 Statistical Test for Correlation\n\n\nCode\nstats.pearsonr(train[\"Gr_Liv_Area\"], train[\"Sale_Price\"])\n\n\nPearsonRResult(statistic=0.6958420133893221, pvalue=6.980207969297806e-297)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#correlation-matrix",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#correlation-matrix",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "7.2 Correlation Matrix",
+    "text": "7.2 Correlation Matrix\n\n\nCode\nnp.corrcoef(\n    train[[\"Year_Built\", \"Total_Bsmt_SF\", \"First_Flr_SF\", \"Gr_Liv_Area\", \"Sale_Price\"]],\n    rowvar=False,\n)\n\n\narray([[1.        , 0.42722628, 0.32717559, 0.23863599, 0.55703178],\n       [0.42722628, 1.        , 0.80658329, 0.45383515, 0.62538744],\n       [0.32717559, 0.80658329, 1.        , 0.57135986, 0.62067339],\n       [0.23863599, 0.45383515, 0.57135986, 1.        , 0.69584201],\n       [0.55703178, 0.62538744, 0.62067339, 0.69584201, 1.        ]])\n\n\nCorrelation matrix pair plots:\n\n\n\nCode\nax = sns.pairplot(\n    train[[\"Year_Built\", \"Total_Bsmt_SF\", \"First_Flr_SF\", \"Gr_Liv_Area\", \"Sale_Price\"]]\n)\nplt.show()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#spearman-correlation-coefficient",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#spearman-correlation-coefficient",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "8.1 Spearman Correlation Coefficient",
+    "text": "8.1 Spearman Correlation Coefficient\n\n\nCode\nstats.spearmanr(train['Gr_Liv_Area'], train['Sale_Price'])\n\n\nSignificanceResult(statistic=0.719959092874937, pvalue=0.0)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#test-for-association",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#test-for-association",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "8.2 Test for Association",
+    "text": "8.2 Test for Association\n\n\nCode\nmodel_slr = smf.ols(\"Sale_Price ~ Gr_Liv_Area\", data=train).fit()\nmodel_slr.summary()\n\n\n\nOLS Regression Results\n\n\nDep. Variable:\nSale_Price\nR-squared:\n0.484\n\n\nModel:\nOLS\nAdj. R-squared:\n0.484\n\n\nMethod:\nLeast Squares\nF-statistic:\n1923.\n\n\nDate:\nMon, 04 Sep 2023\nProb (F-statistic):\n6.98e-297\n\n\nTime:\n22:20:20\nLog-Likelihood:\n-25409.\n\n\nNo. Observations:\n2051\nAIC:\n5.082e+04\n\n\nDf Residuals:\n2049\nBIC:\n5.083e+04\n\n\nDf Model:\n1\n\n\n\n\nCovariance Type:\nnonrobust\n\n\n\n\n\n\n\n\n\ncoef\nstd err\nt\nP&gt;|t|\n[0.025\n0.975]\n\n\nIntercept\n1.577e+04\n4006.043\n3.937\n0.000\n7913.812\n2.36e+04\n\n\nGr_Liv_Area\n110.5452\n2.521\n43.857\n0.000\n105.602\n115.488\n\n\n\n\n\n\nOmnibus:\n342.298\nDurbin-Watson:\n2.050\n\n\nProb(Omnibus):\n0.000\nJarque-Bera (JB):\n4078.850\n\n\nSkew:\n0.396\nProb(JB):\n0.00\n\n\nKurtosis:\n9.863\nCond. No.\n4.96e+03\n\n\n\nNotes:[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.[2] The condition number is large, 4.96e+03. This might indicate that there arestrong multicollinearity or other numerical problems."
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-OLS/index.html#qq-plots",
+    "href": "pycheatsheet/ANOVA-OLS/index.html#qq-plots",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "8.3 QQ-Plots",
+    "text": "8.3 QQ-Plots\n\n\nCode\ntrain['pred_slr'] = model_slr.predict()\ntrain['resid_slr'] = model_slr.resid\n\ntrain[['Sale_Price', 'pred_anova', 'pred_slr']].head(10)\n\n\n      Sale_Price     pred_anova       pred_slr\n2278      130000  144284.926908  240619.031902\n1379      109900  144284.926908  115702.987926\n2182      140000  144284.926908  134274.576765\n1436      207500  231856.752857  198390.776328\n1599       98000  144284.926908  136485.480198\n452       196000  231856.752857  160142.146934\n585       256900  144284.926908  307609.405929\n1078      154000  231856.752857  195516.601865\n2452      290000  231856.752857  295007.256359\n1658      175000  231856.752857  208450.386949\n\n\n\n\nCode\nsma.qqplot(train['resid_slr'])\nplt.show()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html",
+    "href": "pycheatsheet/ANOVA-SLR/index.html",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "",
+    "text": "Code\nlibrary(AmesHousing)\nlibrary(reticulate)\n\nuse_condaenv(\"msa\")\n\names &lt;- make_ordinal_ames()\n\n\n\n\nCode\nimport pandas as pd\nimport numpy as np\nimport seaborn as sns\nimport matplotlib.pyplot as plt\nimport statsmodels as sm\nimport statsmodels.api as sma\nimport scipy.stats as stats\n\n\nWhat is each package used for?\n\npandasnumpyseabornmatplotlibstatsmodels\n\n\npandas library is an open-source data manipulation and analysis library for the Python programming language. It provides data structures and functions that make it easier to work with structured data, such as tabular data (similar to spreadsheets and SQL tables). Pandas is widely used in data analysis, data cleaning, data transformation, and data visualization tasks.\n\n\nnumpy (Numerical Python) is an open-source Python library that provides support for large, multi-dimensional arrays and matrices, as well as a variety of mathematical functions to operate on these arrays. It is a fundamental library for numerical and scientific computing in Python and is widely used in various fields such as data analysis, machine learning, physics, engineering, and more.\nnumpy is useful for its “vectorized” operations which help create performant code for operations.\n\n\nseaborn is an open-source Python data visualization library based on Matplotlib. It provides a higher-level interface for creating informative and attractive statistical graphics. Seaborn is particularly well-suited for creating complex visualizations that showcase relationships and patterns in data, making it a popular choice among data analysts, scientists, and data visualization enthusiasts.\n\n\nmatplotlib is a widely-used open-source data visualization library for the Python programming language. It provides a comprehensive set of tools for creating a variety of static, animated, and interactive visualizations in Python. Matplotlib is particularly popular among scientists, engineers, data analysts, and researchers for creating publication-quality visualizations.\nmatplotlib can be used in combination with seaborn to help adjust low-level graphical details.\n\n\nstatsmodels is an open-source Python library that focuses on statistical modeling and hypothesis testing. It provides a wide range of tools and classes for estimating and interpreting various statistical models. Statsmodels is particularly useful for statisticians, economists, social scientists, and researchers who need to perform rigorous statistical analysis and hypothesis testing on their data.\nIn particular, the summaries provided by statsmodels provides an R-like interface of useful tests and statistics that we would see executing similar code in R.\n\n\n\nIf you’re running the reticulate library in R you can run Python code in R. This also includes converting R objects into Python objects. For example, we can move R datasets to pandas dataframes:\n\n\nCode\names = r.ames"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#continuous-continuous-plots",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#continuous-continuous-plots",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "3.1 Continuous-Continuous Plots",
+    "text": "3.1 Continuous-Continuous Plots\n\n\n\nCode\nax = sns.relplot(data=train, y=train[\"Sale_Price\"] / 1000, x=\"Gr_Liv_Area\")\nax.set(ylabel=\"Sales Price (Thousands $)\", xlabel=\"Greater Living Area (Sqft)\")"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#continuous-categorical-plots",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#continuous-categorical-plots",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "3.2 Continuous-Categorical Plots",
+    "text": "3.2 Continuous-Categorical Plots\n\n\nCode\ntrain[\"Exter_Qual\"] = train[\"Exter_Qual\"].cat.remove_unused_categories()\n\nax = sns.catplot(data=train, y=\"Sale_Price\", x=\"Exter_Qual\", kind=\"bar\")\n\n\n/opt/homebrew/Caskroom/miniconda/base/envs/msa/lib/python3.11/site-packages/seaborn/axisgrid.py:118: UserWarning: The figure layout has changed to tight\n  self._figure.tight_layout(*args, **kwargs)\n\n\nCode\nax.set(ylabel=\"Sales Price (Thousands $)\", xlabel=\"Exterior Quality\")\n\n\n\n\n\nCode\nplt.show()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#histogram-distribution",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#histogram-distribution",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "3.3 Histogram Distribution",
+    "text": "3.3 Histogram Distribution\n\n\nCode\nax = sns.displot(data=ames, x=ames[\"Sale_Price\"] / 1000, hue=\"Exter_Qual\")\n\n\n/opt/homebrew/Caskroom/miniconda/base/envs/msa/lib/python3.11/site-packages/seaborn/axisgrid.py:118: UserWarning: The figure layout has changed to tight\n  self._figure.tight_layout(*args, **kwargs)\n\n\nCode\nax.set(xlabel=\"Sales Price (Thousands $)\", ylabel=\"Frequency\")\n\n\n\n\n\nCode\nplt.show()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#kde-distribution",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#kde-distribution",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "3.4 KDE Distribution",
+    "text": "3.4 KDE Distribution\n\n\nCode\nax = sns.displot(\n    ames,\n    x=ames[\"Sale_Price\"] / 1000,\n    hue=\"Exter_Qual\",\n    common_norm=False,\n    kind=\"kde\",\n    fill=True,\n)\n\n\n/opt/homebrew/Caskroom/miniconda/base/envs/msa/lib/python3.11/site-packages/seaborn/axisgrid.py:118: UserWarning: The figure layout has changed to tight\n  self._figure.tight_layout(*args, **kwargs)\n\n\nCode\nax.set(xlabel=\"Sales Price (Thousands $)\", ylabel=\"Density\")\n\n\n\n\n\nCode\nplt.show()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#box-plot",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#box-plot",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "3.5 Box Plot",
+    "text": "3.5 Box Plot\n\n\nCode\nax = sns.catplot(ames, x=\"Exter_Qual\", y=\"Sale_Price\", kind=\"box\")\nplt.show()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#alternative-method-using-anova_oneway",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#alternative-method-using-anova_oneway",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "4.1 Alternative Method Using anova_oneway",
+    "text": "4.1 Alternative Method Using anova_oneway\n\n\nCode\nsm.stats.oneway.anova_oneway(\n    train[\"Sale_Price\"],\n    groups=train[\"Exter_Qual\"],\n    use_var=\"equal\",\n    welch_correction=False,\n)\n\n\n&lt;class 'statsmodels.stats.base.HolderTuple'&gt;\nstatistic = 663.9425520223926\npvalue = 2.1437019005998585e-301\ndf = (3.0, 2047.0)\ndf_num = 3.0\ndf_denom = 2047.0\nnobs_t = 2051.0\nn_groups = 4\nmeans = array([372342.7721519 ,  87410.40740741, 231856.75285714, 144284.92690763])\nnobs = array([  79.,   27.,  700., 1245.])\nvars_ = array([1.19696698e+10, 1.52817220e+09, 4.96364326e+09, 1.89297368e+09])\nuse_var = 'equal'\nwelch_correction = False\ntuple = (663.9425520223926, 2.1437019005998585e-301)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#alternative-method-using-scipy",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#alternative-method-using-scipy",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "4.2 Alternative Method Using scipy",
+    "text": "4.2 Alternative Method Using scipy\n\n\nCode\nstats.f_oneway(\n    train.loc[train[\"Exter_Qual\"] == \"Excellent\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Good\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Typical\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Fair\", \"Sale_Price\"],\n)\n\n\nF_onewayResult(statistic=663.9425520223925, pvalue=2.1437019005998585e-301)\n\n\n\n\nCode\ntrain[\"pred_anova\"] = model.predict()\ntrain[\"resid_anova\"] = model.resid\n\ntrain[[\"Sale_Price\", \"pred_anova\", \"resid_anova\"]].head(10)\n\n\n      Sale_Price     pred_anova    resid_anova\n2278      130000  144284.926908  -14284.926908\n1379      109900  144284.926908  -34384.926908\n2182      140000  144284.926908   -4284.926908\n1436      207500  231856.752857  -24356.752857\n1599       98000  144284.926908  -46284.926908\n452       196000  231856.752857  -35856.752857\n585       256900  144284.926908  112615.073092\n1078      154000  231856.752857  -77856.752857\n2452      290000  231856.752857   58143.247143\n1658      175000  231856.752857  -56856.752857"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#qq-plot",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#qq-plot",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "5.1 QQ-Plot",
+    "text": "5.1 QQ-Plot\n\n\nCode\nsma.qqplot(train[\"resid_anova\"])\nplt.show()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#shapiro-wilk-test",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#shapiro-wilk-test",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "5.2 Shapiro-Wilk Test",
+    "text": "5.2 Shapiro-Wilk Test\n\n\nCode\nstats.shapiro(model.resid)\n\n\nShapiroResult(statistic=0.9174789786338806, pvalue=4.540434210506634e-32)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#levene-test",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#levene-test",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "5.3 Levene Test",
+    "text": "5.3 Levene Test\n\n\nCode\nstats.levene(\n    train.loc[train[\"Exter_Qual\"] == \"Excellent\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Good\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Typical\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Fair\", \"Sale_Price\"],\n)\n\n\nLeveneResult(statistic=65.87759543050396, pvalue=1.1590149512173662e-40)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#fligner-test",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#fligner-test",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "5.4 Fligner Test",
+    "text": "5.4 Fligner Test\n\n\nCode\nstats.fligner(\n    train.loc[train[\"Exter_Qual\"] == \"Excellent\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Good\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Typical\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Fair\", \"Sale_Price\"],\n)\n\n\nFlignerResult(statistic=181.57626347457713, pvalue=4.027701838364485e-39)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#kruskal-wallis",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#kruskal-wallis",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "5.5 Kruskal-Wallis",
+    "text": "5.5 Kruskal-Wallis\n\n\nCode\nstats.kruskal(\n    train.loc[train[\"Exter_Qual\"] == \"Excellent\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Good\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Typical\", \"Sale_Price\"],\n    train.loc[train[\"Exter_Qual\"] == \"Fair\", \"Sale_Price\"],\n)\n\n\nKruskalResult(statistic=980.2665302456622, pvalue=3.434646694236542e-212)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#tukey-kramer-test",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#tukey-kramer-test",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "6.1 Tukey-Kramer Test",
+    "text": "6.1 Tukey-Kramer Test\n\n\nCode\nimport statsmodels.stats.multicomp as mc\n\ncomp = mc.MultiComparison(train[\"Sale_Price\"], train[\"Exter_Qual\"])\nph_res = comp.tukeyhsd(alpha=0.05)\nph_res.summary()\n\n\n\nMultiple Comparison of Means - Tukey HSD, FWER=0.05\n\n\ngroup1\ngroup2\nmeandiff\np-adj\nlower\nupper\nreject\n\n\nExcellent\nFair\n-284932.3647\n0.0\n-317962.4284\n-251902.3011\nTrue\n\n\nExcellent\nGood\n-140486.0193\n0.0\n-158071.6548\n-122900.3837\nTrue\n\n\nExcellent\nTypical\n-228057.8452\n0.0\n-245248.7081\n-210866.9824\nTrue\n\n\nFair\nGood\n144446.3454\n0.0\n115386.8407\n173505.8502\nTrue\n\n\nFair\nTypical\n56874.5195\n0.0\n28052.2017\n85696.8374\nTrue\n\n\nGood\nTypical\n-87571.8259\n0.0\n-94571.5032\n-80572.1487\nTrue\n\n\n\n\n\n\n\nCode\nph_res.plot_simultaneous()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#dunnetts-test",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#dunnetts-test",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "6.2 Dunnett’s Test",
+    "text": "6.2 Dunnett’s Test\nCurrently there is no Dunnett’s test implemented in Python."
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#statistical-test-for-correlation",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#statistical-test-for-correlation",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "7.1 Statistical Test for Correlation",
+    "text": "7.1 Statistical Test for Correlation\n\n\nCode\nstats.pearsonr(train[\"Gr_Liv_Area\"], train[\"Sale_Price\"])\n\n\nPearsonRResult(statistic=0.6958420133893221, pvalue=6.980207969297806e-297)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#correlation-matrix",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#correlation-matrix",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "7.2 Correlation Matrix",
+    "text": "7.2 Correlation Matrix\n\n\nCode\nnp.corrcoef(\n    train[[\"Year_Built\", \"Total_Bsmt_SF\", \"First_Flr_SF\", \"Gr_Liv_Area\", \"Sale_Price\"]],\n    rowvar=False,\n)\n\n\narray([[1.        , 0.42722628, 0.32717559, 0.23863599, 0.55703178],\n       [0.42722628, 1.        , 0.80658329, 0.45383515, 0.62538744],\n       [0.32717559, 0.80658329, 1.        , 0.57135986, 0.62067339],\n       [0.23863599, 0.45383515, 0.57135986, 1.        , 0.69584201],\n       [0.55703178, 0.62538744, 0.62067339, 0.69584201, 1.        ]])\n\n\nCorrelation matrix pair plots:\n\n\n\nCode\nax = sns.pairplot(\n    train[[\"Year_Built\", \"Total_Bsmt_SF\", \"First_Flr_SF\", \"Gr_Liv_Area\", \"Sale_Price\"]]\n)\nplt.show()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#spearman-correlation-coefficient",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#spearman-correlation-coefficient",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "8.1 Spearman Correlation Coefficient",
+    "text": "8.1 Spearman Correlation Coefficient\n\n\nCode\nstats.spearmanr(train['Gr_Liv_Area'], train['Sale_Price'])\n\n\nSignificanceResult(statistic=0.719959092874937, pvalue=0.0)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#test-for-association",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#test-for-association",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "8.2 Test for Association",
+    "text": "8.2 Test for Association\n\n\nCode\nmodel_slr = smf.ols(\"Sale_Price ~ Gr_Liv_Area\", data=train).fit()\nmodel_slr.summary()\n\n\n\nOLS Regression Results\n\n\nDep. Variable:\nSale_Price\nR-squared:\n0.484\n\n\nModel:\nOLS\nAdj. R-squared:\n0.484\n\n\nMethod:\nLeast Squares\nF-statistic:\n1923.\n\n\nDate:\nMon, 04 Sep 2023\nProb (F-statistic):\n6.98e-297\n\n\nTime:\n22:20:58\nLog-Likelihood:\n-25409.\n\n\nNo. Observations:\n2051\nAIC:\n5.082e+04\n\n\nDf Residuals:\n2049\nBIC:\n5.083e+04\n\n\nDf Model:\n1\n\n\n\n\nCovariance Type:\nnonrobust\n\n\n\n\n\n\n\n\n\ncoef\nstd err\nt\nP&gt;|t|\n[0.025\n0.975]\n\n\nIntercept\n1.577e+04\n4006.043\n3.937\n0.000\n7913.812\n2.36e+04\n\n\nGr_Liv_Area\n110.5452\n2.521\n43.857\n0.000\n105.602\n115.488\n\n\n\n\n\n\nOmnibus:\n342.298\nDurbin-Watson:\n2.050\n\n\nProb(Omnibus):\n0.000\nJarque-Bera (JB):\n4078.850\n\n\nSkew:\n0.396\nProb(JB):\n0.00\n\n\nKurtosis:\n9.863\nCond. No.\n4.96e+03\n\n\n\nNotes:[1] Standard Errors assume that the covariance matrix of the errors is correctly specified.[2] The condition number is large, 4.96e+03. This might indicate that there arestrong multicollinearity or other numerical problems."
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-SLR/index.html#qq-plots",
+    "href": "pycheatsheet/ANOVA-SLR/index.html#qq-plots",
+    "title": "One-Way ANOVA and Simple Linear Regression",
+    "section": "8.3 QQ-Plots",
+    "text": "8.3 QQ-Plots\n\n\nCode\ntrain['pred_slr'] = model_slr.predict()\ntrain['resid_slr'] = model_slr.resid\n\ntrain[['Sale_Price', 'pred_anova', 'pred_slr']].head(10)\n\n\n      Sale_Price     pred_anova       pred_slr\n2278      130000  144284.926908  240619.031902\n1379      109900  144284.926908  115702.987926\n2182      140000  144284.926908  134274.576765\n1436      207500  231856.752857  198390.776328\n1599       98000  144284.926908  136485.480198\n452       196000  231856.752857  160142.146934\n585       256900  144284.926908  307609.405929\n1078      154000  231856.752857  195516.601865\n2452      290000  231856.752857  295007.256359\n1658      175000  231856.752857  208450.386949\n\n\n\n\nCode\nsma.qqplot(train['resid_slr'])\nplt.show()"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-MLR/index.html",
+    "href": "pycheatsheet/ANOVA-MLR/index.html",
+    "title": "Complex ANOVA and Multiple Linear Regression",
+    "section": "",
+    "text": "Code\nlibrary(AmesHousing)\nlibrary(reticulate)\n\nuse_condaenv(\"msa\")\n\names &lt;- make_ordinal_ames()\n\n\n\n\nCode\nimport pandas as pd\nimport numpy as np\nimport seaborn as sns\nimport matplotlib.pyplot as plt\nimport statsmodels as sm\nimport statsmodels.api as sma\nimport statsmodels.formula.api as smf\nimport scipy.stats as stats\n\n\nWhat is each package used for?\n\npandasnumpyseabornmatplotlibstatsmodels\n\n\npandas library is an open-source data manipulation and analysis library for the Python programming language. It provides data structures and functions that make it easier to work with structured data, such as tabular data (similar to spreadsheets and SQL tables). Pandas is widely used in data analysis, data cleaning, data transformation, and data visualization tasks.\n\n\nnumpy (Numerical Python) is an open-source Python library that provides support for large, multi-dimensional arrays and matrices, as well as a variety of mathematical functions to operate on these arrays. It is a fundamental library for numerical and scientific computing in Python and is widely used in various fields such as data analysis, machine learning, physics, engineering, and more.\nnumpy is useful for its “vectorized” operations which help create performant code for operations.\n\n\nseaborn is an open-source Python data visualization library based on Matplotlib. It provides a higher-level interface for creating informative and attractive statistical graphics. Seaborn is particularly well-suited for creating complex visualizations that showcase relationships and patterns in data, making it a popular choice among data analysts, scientists, and data visualization enthusiasts.\n\n\nmatplotlib is a widely-used open-source data visualization library for the Python programming language. It provides a comprehensive set of tools for creating a variety of static, animated, and interactive visualizations in Python. Matplotlib is particularly popular among scientists, engineers, data analysts, and researchers for creating publication-quality visualizations.\nmatplotlib can be used in combination with seaborn to help adjust low-level graphical details.\n\n\nstatsmodels is an open-source Python library that focuses on statistical modeling and hypothesis testing. It provides a wide range of tools and classes for estimating and interpreting various statistical models. Statsmodels is particularly useful for statisticians, economists, social scientists, and researchers who need to perform rigorous statistical analysis and hypothesis testing on their data.\nIn particular, the summaries provided by statsmodels provides an R-like interface of useful tests and statistics that we would see executing similar code in R.\n\n\n\nIf you’re running the reticulate library in R you can run Python code in R. This also includes converting R objects into Python objects. For example, we can move R datasets to pandas dataframes:\n\n\nCode\names = r.ames\n\n\n\n\n\n\nCode\nfrom sklearn.model_selection import train_test_split\n\ntrain, test = train_test_split(ames, test_size=0.3, random_state=123)"
+  },
+  {
+    "objectID": "pycheatsheet/ANOVA-MLR/index.html#additional-setup",
+    "href": "pycheatsheet/ANOVA-MLR/index.html#additional-setup",
+    "title": "Complex ANOVA and Multiple Linear Regression",
+    "section": "",
+    "text": "Code\nfrom sklearn.model_selection import train_test_split\n\ntrain, test = train_test_split(ames, test_size=0.3, random_state=123)"
   }
 ]
